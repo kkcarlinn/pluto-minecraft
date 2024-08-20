@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../../ProgramData/chocolatey/lib/gradle/tools/gradle-8.8" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/compat" />
+            <option value="$PROJECT_DIR$/compat/snakeyaml-compat-common" />
+            <option value="$PROJECT_DIR$/compat/snakeyaml1-compat" />
+            <option value="$PROJECT_DIR$/compat/snakeyaml2-compat" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core-bukkit" />
+            <option value="$PROJECT_DIR$/protocollib" />
+            <option value="$PROJECT_DIR$/proxy" />
+            <option value="$PROJECT_DIR$/viarewind" />
+            <option value="$PROJECT_DIR$/viaversion-api" />
+            <option value="$PROJECT_DIR$/viaversion-bukkit" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
