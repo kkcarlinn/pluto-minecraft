@@ -2,6 +2,7 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     id("java")
+    id("net.minecrell.plugin-yml.bukkit") version "0.3.0"
 }
 
 group = "br.com.plutomc.arcade"
@@ -44,4 +45,13 @@ fun getBuildDate() : String{
         standardOutput = stdout
     }
     return stdout.toString().trim().replace(" -0300", "").replace("-", "/")
+}
+
+bukkit {
+    name = "Arcade"
+    version = "1.0.0-${getGitCommitId().substring(0, 7)} from ${getGitBranch()} LTS (${getBuildDate()})"
+    main = "br.com.plutomc.lobby.bedwars.LobbyMain"
+    authors = listOf("unidade")
+    description = "Arcade server system (based on [core, core-bukkit, core-*, arcade])"
+    website = "www.plutomc.com.br"
 }
