@@ -14,3 +14,6 @@ include("protocollib")
 include("core")
 include("core-bukkit")
 include("proxy")
+include("lobby-core")
+include("lobby-core:lobby-main")
+findProject(":lobby-core:lobby-main")?.name = "lobby-main"

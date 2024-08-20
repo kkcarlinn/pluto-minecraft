@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-group = "br.com.yolomc"
+group = "br.com.plutomc"
 version = "1.0.0"
 
 java {

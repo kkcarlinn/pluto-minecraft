@@ -11,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.skipdevelopment:pluto-bungee:1.0")
     compileOnly("com.github.skipdevelopment:pluto-spigot:1.0")
+    implementation(project(":core"))
     implementation(project(":viaversion-api"))
     implementation(project(":viaversion-bukkit"))
     implementation(project(":viarewind"))

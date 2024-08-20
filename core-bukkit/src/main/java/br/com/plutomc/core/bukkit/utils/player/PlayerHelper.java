@@ -47,11 +47,7 @@ public class PlayerHelper {
       packet.getChatComponents().write(0, WrappedChatComponent.fromText(rawHeader));
       packet.getChatComponents().write(1, WrappedChatComponent.fromText(rawFooter));
 
-      try {
-         ProtocolLibrary.getProtocolManager().sendServerPacket(p, packet);
-      } catch (InvocationTargetException var5) {
-         var5.printStackTrace();
-      }
+       ProtocolLibrary.getProtocolManager().sendServerPacket(p, packet);
    }
 
    public static void title(Player player, String title, String subTitle) {
@@ -111,11 +107,7 @@ public class PlayerHelper {
    }
 
    public static void sendPacket(Player player, PacketContainer packet) {
-      try {
-         ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
-      } catch (InvocationTargetException var3) {
-         var3.printStackTrace();
-      }
+       ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
    }
 
    public static String translate(Language lang, String string) {

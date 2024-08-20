@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":core"))
     compileOnly("com.github.skipdevelopment:pluto-bungee:1.0")
 }
 
@@ -37,8 +38,8 @@ tasks.withType<JavaCompile> {
 }
 
 bungee {
-    name = "proxy-core"
-    main = "br.com.yolomc.proxy.ProxyCore"
+    name = "proxy"
+    main = "br.com.plutomc.core.bungee.BungeeMain"
     version = "1.0.0-${details.gitHash.substring(0, 7)} from ${details.branchName} LTS (${getBuildDate()})"
-    author = "Eurodata, unidade"
+    author = "unidade"
 }
