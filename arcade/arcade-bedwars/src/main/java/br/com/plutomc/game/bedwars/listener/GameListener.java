@@ -338,14 +338,10 @@ public class GameListener implements Listener {
             for(Player target : playerList) {
                target.getInventory().addItem(new ItemStack[]{ItemBuilder.fromStack(itemStack).amount(itemPerPlayer).build()});
 
-               try {
-                  ProtocolLibrary.getProtocolManager()
-                     .sendServerPacket(
-                        target, new PacketBuilder(Server.COLLECT).writeInteger(0, item.getEntityId()).writeInteger(1, target.getEntityId()).build()
-                     );
-               } catch (InvocationTargetException var12) {
-                  var12.printStackTrace();
-               }
+               ProtocolLibrary.getProtocolManager()
+                       .sendServerPacket(
+                               target, new PacketBuilder(Server.COLLECT).writeInteger(0, item.getEntityId()).writeInteger(1, target.getEntityId()).build()
+                       );
             }
 
             item.remove();
