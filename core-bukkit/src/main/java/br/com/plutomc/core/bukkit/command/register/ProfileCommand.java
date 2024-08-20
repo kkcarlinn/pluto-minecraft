@@ -433,7 +433,7 @@ public class ProfileCommand implements CommandClass {
                }
 
                message.addExtra(
-                  new MessageBuilder(t.getStrippedColor().toUpperCase())
+                  new MessageBuilder(t.getScore())
                      .setHoverEvent(
                         new HoverEvent(
                            HoverEvent.Action.SHOW_TEXT,

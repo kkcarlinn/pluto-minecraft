@@ -401,7 +401,7 @@ public class ModeradorCommand implements CommandClass {
      aliases = {"bungeeversion"}
    )
    public void versionCommand(CommandArgs args) {
-      args.getSender().sendMessage("§aO core-proxy está na versão " + ProxyServer.getInstance().getPluginManager().getPlugin("core-proxy").getDescription().getVersion());
+      args.getSender().sendMessage("§aO core-proxy está na versão " + ProxyServer.getInstance().getPluginManager().getPlugin("proxy").getDescription().getVersion());
    }
 
    @CommandFramework.Command(
