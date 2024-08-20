@@ -1,0 +1,11 @@
+{
+  "mapName": "Teste",
+  "minimunDistanceToPlaceBlocks": 12.0,
+  "maxHeight": 100.0,
+  "emeraldGenerator": [
+  ],
+  "diamondGenerator": [
+  ],
+  "islands": [
+  ]
+}

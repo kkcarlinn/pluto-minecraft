@@ -22,3 +22,5 @@ findProject(":lobby-core:lobby-bedwars")?.name = "lobby-bedwars"
 include("lobby-core:lobby-login")
 findProject(":lobby-core:lobby-login")?.name = "lobby-login"
 include("arcade")
+include("arcade:arcade-bedwars")
+findProject(":arcade:arcade-bedwars")?.name = "arcade-bedwars"
