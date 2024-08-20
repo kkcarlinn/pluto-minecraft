@@ -18,9 +18,28 @@ dependencies {
     implementation(project(":core"))
     compileOnly("com.github.skipdevelopment:pluto-bungee:1.0")
 }
-/*
-val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
-val details = versionDetails()
+
+fun getGitCommitId(): String {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "rev-parse", "HEAD")
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+val currentCommitId = getGitCommitId()
+
+fun getGitBranch(): String {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+val currentBranch = getGitBranch()
 
 fun getBuildDate() : String{
     val stdout = ByteArrayOutputStream()
@@ -30,8 +49,6 @@ fun getBuildDate() : String{
     }
     return stdout.toString().trim().replace(" -0300", "").replace("-", "/")
 }
-
-*/
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
@@ -39,6 +56,6 @@ tasks.withType<JavaCompile> {
 bungee {
     name = "proxy"
     main = "br.com.plutomc.core.bungee.BungeeMain"
-    version = "1.0.0"
+    version = "1.0.0-${getGitCommitId().substring(0, 7)} from ${getGitBranch()} LTS (${getBuildDate()})"
     author = "unidade"
 }

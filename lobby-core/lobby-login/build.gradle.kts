@@ -18,12 +18,12 @@ dependencies {
 }
 
 val shadowJarTask = tasks.getByName<ShadowJar>("shadowJar")
-
+/*
 tasks.register<Copy>("copyToPluginsDir") {
     dependsOn(shadowJarTask)
     from(shadowJarTask.outputs.files)
     into("C:/pluto/lobby-1/plugins/")
-}
+} */
 
 fun getGitCommitId(): String {
     val stdout = ByteArrayOutputStream()
@@ -59,7 +59,7 @@ fun getBuildDate() : String{
 bukkit {
     name = "lobbyhost"
     version = "1.0.0-${getGitCommitId().substring(0, 7)} from ${getGitBranch()} LTS (${getBuildDate()})"
-    main = "br.com.plutomc.lobby.main.LobbyMain"
+    main = "br.com.plutomc.lobby.login.LobbyMain"
     authors = listOf("unidade")
     description = "Lobby server system (based on [core, core-bukkit, core-*])"
     website = "www.plutomc.com.br"

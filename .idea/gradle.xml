@@ -16,6 +16,8 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core-bukkit" />
             <option value="$PROJECT_DIR$/lobby-core" />
+            <option value="$PROJECT_DIR$/lobby-core/lobby-bedwars" />
+            <option value="$PROJECT_DIR$/lobby-core/lobby-login" />
             <option value="$PROJECT_DIR$/lobby-core/lobby-main" />
             <option value="$PROJECT_DIR$/protocollib" />
             <option value="$PROJECT_DIR$/proxy" />

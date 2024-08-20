@@ -1,7 +1,8 @@
+import java.io.ByteArrayOutputStream
+
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("com.palantir.git-version") version "3.0.0"
 }
 
 group = "br.com.plutomc"
@@ -38,7 +39,6 @@ subprojects {
 
     apply(plugin = "java")
     apply(plugin = "com.github.johnrengelman.shadow")
-    apply(plugin = "com.palantir.git-version")
 
     repositories {
         maven("https://jitpack.io")
@@ -66,5 +66,37 @@ subprojects {
         implementation("org.slf4j:slf4j-jdk14:2.0.0-alpha7")
         implementation("org.apache.commons:commons-pool2:2.11.1")
     }
+
+    fun getGitCommitId(): String {
+        val stdout = ByteArrayOutputStream()
+        exec {
+            commandLine("git", "rev-parse", "HEAD")
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }
+
+    val currentCommitId = getGitCommitId()
+
+    fun getGitBranch(): String {
+        val stdout = ByteArrayOutputStream()
+        exec {
+            commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }
+
+    val currentBranch = getGitBranch()
+
+    fun getBuildDate() : String{
+        val stdout = ByteArrayOutputStream()
+        exec {
+            commandLine("git", "show", "--no-patch", "--format=%ci")
+            standardOutput = stdout
+        }
+        return stdout.toString().trim().replace(" -0300", "").replace("-", "/")
+    }
+
 }
 

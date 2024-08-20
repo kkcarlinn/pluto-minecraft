@@ -17,3 +17,7 @@ include("proxy")
 include("lobby-core")
 include("lobby-core:lobby-main")
 findProject(":lobby-core:lobby-main")?.name = "lobby-main"
+include("lobby-core:lobby-bedwars")
+findProject(":lobby-core:lobby-bedwars")?.name = "lobby-bedwars"
+include("lobby-core:lobby-login")
+findProject(":lobby-core:lobby-login")?.name = "lobby-login"

@@ -1,14 +1,14 @@
 package br.com.plutomc.lobby.main;
 
 import java.util.Arrays;
-import br.com.plutomc.lobby.core.CoreMain;
+import br.com.plutomc.lobby.lobbyhost.LobbyHost;
 import br.com.plutomc.lobby.main.listener.ScoreboardListener;
 import br.com.plutomc.core.bukkit.utils.character.handler.ActionHandler;
 import br.com.plutomc.core.common.server.ServerType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class LobbyMain extends CoreMain {
+public class LobbyMain extends LobbyHost {
    private static LobbyMain instance;
 
    @Override
