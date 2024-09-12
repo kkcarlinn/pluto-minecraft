@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.io.ByteArrayOutputStream
 
 plugins {
@@ -51,6 +52,16 @@ fun getBuildDate() : String{
 }
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+}
+
+val shadowJarTask = tasks.getByName<ShadowJar>("shadowJar")
+
+
+
+tasks.register<Copy>("copyToPluginsDir") {
+    dependsOn(shadowJarTask)
+    from(shadowJarTask.outputs.files)
+    into("C:/pluto/proxy/plugins/")
 }
 
 bungee {

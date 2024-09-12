@@ -1,6 +1,7 @@
 package br.com.plutomc.core.bungee;
 
 import br.com.plutomc.core.bungee.member.BungeeParty;
+import br.com.plutomc.core.common.docker.DemandDockerServer;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import java.io.File;
@@ -90,6 +91,8 @@ public class BungeeMain extends Plugin {
             ProxyServer.getInstance().broadcast(this.getMessages().get(CommonConst.RANDOM.nextInt(this.getMessages().size())));
          }
       }, 2L, 2L, TimeUnit.MINUTES);
+
+      new DemandDockerServer().startServer("lobby", 25566, "1");
       super.onEnable();
    }
 
@@ -136,6 +139,7 @@ public class BungeeMain extends Plugin {
 
    public void onDisable() {
       this.plugin.getServerData().stopServer();
+      new DemandDockerServer().stopServer("lobby");
       super.onDisable();
    }
 

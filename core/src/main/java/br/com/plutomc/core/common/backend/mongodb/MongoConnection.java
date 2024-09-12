@@ -26,9 +26,7 @@ public class MongoConnection implements Database {
 
    public MongoConnection(String hostName, String userName, String passWord, String dataBase, int port) {
       this(
-         IP_PATTERN.matcher(hostName).matches()
-            ? "mongodb://" + (userName.isEmpty() ? "" : userName + ":" + passWord + "@") + hostName + "/" + dataBase + "?retryWrites=true&w=majority"
-            : "mongodb+srv://" + (userName.isEmpty() ? "" : userName + ":" + passWord + "@") + hostName + "/" + dataBase + "?retryWrites=true&w=majority"
+              "mongodb://" + (userName.isEmpty() ? "" : userName + ":" + passWord + "@") + hostName + "/" + dataBase + "?retryWrites=true&w=majority"
       );
    }
 

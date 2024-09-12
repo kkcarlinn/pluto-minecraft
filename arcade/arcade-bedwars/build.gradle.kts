@@ -50,7 +50,7 @@ fun getBuildDate() : String{
 bukkit {
     name = "Arcade"
     version = "1.0.0-${getGitCommitId().substring(0, 7)} from ${getGitBranch()} LTS (${getBuildDate()})"
-    main = "br.com.plutomc.lobby.bedwars.LobbyMain"
+    main = "br.com.plutomc.game.bedwars.GameMain"
     authors = listOf("unidade")
     description = "Arcade server system (based on [core, core-bukkit, core-*, arcade])"
     website = "www.plutomc.com.br"
