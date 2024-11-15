@@ -18,12 +18,12 @@ dependencies {
 }
 
 val shadowJarTask = tasks.getByName<ShadowJar>("shadowJar")
-/*
+
 tasks.register<Copy>("copyToPluginsDir") {
     dependsOn(shadowJarTask)
     from(shadowJarTask.outputs.files)
-    into("C:/pluto/lobby-1/plugins/")
-} */
+    into("C:/pluto/lobbybw/plugins/")
+}
 
 fun getGitCommitId(): String {
     val stdout = ByteArrayOutputStream()

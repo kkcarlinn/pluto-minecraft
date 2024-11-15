@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.io.ByteArrayOutputStream
 
 plugins {
@@ -23,6 +24,14 @@ fun getGitCommitId(): String {
         standardOutput = stdout
     }
     return stdout.toString().trim()
+}
+
+val shadowJarTask = tasks.getByName<ShadowJar>("shadowJar")
+
+tasks.register<Copy>("copyToPluginsDir") {
+    dependsOn(shadowJarTask)
+    from(shadowJarTask.outputs.files)
+    into("C:/pluto/bw-a14-solo/plugins/")
 }
 
 val currentCommitId = getGitCommitId()
