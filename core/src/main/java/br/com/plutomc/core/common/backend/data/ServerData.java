@@ -37,7 +37,7 @@ public interface ServerData extends Data<MongoQuery> {
 
    void stopServer();
 
-   void setTotalMembers(int var1);
+   void setTotalPlayers(int var1);
 
    void joinPlayer(UUID var1, int var2);
 

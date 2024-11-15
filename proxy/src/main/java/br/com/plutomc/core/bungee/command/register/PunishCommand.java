@@ -2,14 +2,14 @@ package br.com.plutomc.core.bungee.command.register;
 
 import br.com.plutomc.core.bungee.event.player.PlayerPardonedEvent;
 import br.com.plutomc.core.bungee.event.player.PlayerPunishEvent;
-import br.com.plutomc.core.bungee.member.BungeeMember;
+import br.com.plutomc.core.bungee.account.BungeeAccount;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.PluginInfo;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
 import br.com.plutomc.core.common.command.CommandSender;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.punish.Punish;
 import br.com.plutomc.core.common.punish.PunishType;
 import br.com.plutomc.core.common.utils.DateUtils;
@@ -126,9 +126,9 @@ public class PunishCommand implements CommandClass {
     }
 
     public void punish(CommandSender sender, String playerName, PunishType punishType, String reason, long expireTime) {
-        Member target = CommonPlugin.getInstance().getMemberManager().getMemberByName(playerName);
+        Account target = CommonPlugin.getInstance().getAccountManager().getAccountByName(playerName);
         if (target == null) {
-            target = CommonPlugin.getInstance().getMemberData().loadMember(playerName, true);
+            target = CommonPlugin.getInstance().getAccountData().loadAccount(playerName, true);
             if (target == null) {
                 sender.sendMessage(sender.getLanguage().t("player-not-found", "%player%", playerName));
                 return;
@@ -223,9 +223,9 @@ public class PunishCommand implements CommandClass {
         }
     }
 
-    private void kickPlayer(Member target, Punish punish) {
-        if (target instanceof BungeeMember) {
-            BungeeMember bungeeMember = (BungeeMember) target;
+    private void kickPlayer(Account target, Punish punish) {
+        if (target instanceof BungeeAccount) {
+            BungeeAccount bungeeMember = (BungeeAccount) target;
             ProxiedPlayer player = bungeeMember.getProxiedPlayer();
             if (player != null) {
                 player.disconnect(
@@ -250,10 +250,10 @@ public class PunishCommand implements CommandClass {
         }
     }
 
-    public void banPlayer(Member target, Punish punish) {
+    public void banPlayer(Account target, Punish punish) {
         CommonPlugin.getInstance().getReportManager().notify(target.getUniqueId());
         if (target.isOnline()) {
-            BungeeMember bungeeMember = (BungeeMember) target;
+            BungeeAccount bungeeMember = (BungeeAccount) target;
             ProxiedPlayer player = bungeeMember.getProxiedPlayer();
             if (player != null) {
                 player.disconnect(
@@ -281,9 +281,9 @@ public class PunishCommand implements CommandClass {
     }
 
     private void pardon(CommandSender sender, String[] args, PunishType punishType) {
-        Member target = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[0]);
+        Account target = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[0]);
         if (target == null) {
-            target = CommonPlugin.getInstance().getMemberData().loadMember(args[0], true);
+            target = CommonPlugin.getInstance().getAccountData().loadAccount(args[0], true);
             if (target == null) {
                 sender.sendMessage(sender.getLanguage().t("player-not-found", "%player%", args[0]));
                 return;

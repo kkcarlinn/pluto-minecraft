@@ -3,7 +3,7 @@ package br.com.plutomc.core.common.packet.types;
 import java.util.UUID;
 
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.packet.Packet;
 import br.com.plutomc.core.common.packet.PacketType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -24,9 +24,9 @@ public class PlayerMessagePacket extends Packet {
 
    @Override
    public void receive() {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(this.uniqueId);
-      if (member != null) {
-         member.sendMessage(this.components);
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(this.uniqueId);
+      if (account != null) {
+         account.sendMessage(this.components);
       }
    }
 

@@ -10,7 +10,7 @@ import br.com.plutomc.core.bukkit.utils.menu.MenuInventory;
 import br.com.plutomc.core.bukkit.utils.menu.MenuItem;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -19,7 +19,7 @@ public class TranslationInventory {
 
    public TranslationInventory(Player player, Language language, int page) {
       MenuInventory menuInventory = new MenuInventory(
-         Member.getLanguage(player.getUniqueId()).t("staff.inventory-translation", "%page%", page + "", "%language%", language.getLanguageName()), 5
+         Account.getLanguage(player.getUniqueId()).t("staff.inventory-translation", "%page%", page + "", "%language%", language.getLanguageName()), 5
       );
       List<MenuItem> items = new ArrayList<>();
 

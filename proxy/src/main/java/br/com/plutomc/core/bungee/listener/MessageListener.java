@@ -7,7 +7,7 @@ import br.com.plutomc.core.bungee.BungeeMain;
 import br.com.plutomc.core.bungee.event.player.PlayerCommandEvent;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.packet.types.StaffchatDiscordPacket;
 import br.com.plutomc.core.common.punish.Punish;
 import br.com.plutomc.core.common.punish.PunishType;
@@ -29,8 +29,8 @@ public class MessageListener implements Listener {
       if (event.getSender() instanceof ProxiedPlayer) {
          if (!event.isCancelled()) {
             ProxiedPlayer proxiedPlayer = (ProxiedPlayer)event.getSender();
-            Member member = CommonPlugin.getInstance().getMemberManager().getMember(proxiedPlayer.getUniqueId());
-            if (member == null) {
+            Account account = CommonPlugin.getInstance().getAccountManager().getAccount(proxiedPlayer.getUniqueId());
+            if (account == null) {
                event.setCancelled(true);
                proxiedPlayer.disconnect("§cSua conta não foi carregada. [BungeeCord: 01]");
             } else {
@@ -44,51 +44,51 @@ public class MessageListener implements Listener {
                           .getPluginManager()
                           .callEvent(new PlayerCommandEvent(proxiedPlayer, command, args));
                   event.setCancelled(callEvent.isCancelled());
-               } else if (member.getMemberConfiguration().isStaffChat()) {
-                  if (!member.getMemberConfiguration().isSeeingStaffChat()) {
+               } else if (account.getAccountConfiguration().isStaffChat()) {
+                  if (!account.getAccountConfiguration().isSeeingStaffChat()) {
                      event.setCancelled(true);
-                     member.sendMessage("§cAtiva a visualização do staffchat para poder falar no staffchat.");
+                     account.sendMessage("§cAtiva a visualização do staffchat para poder falar no staffchat.");
                   } else {
-                     String staffMessage = this.getStaffchatMessage(member, ChatColor.translateAlternateColorCodes('&', message));
+                     String staffMessage = this.getStaffchatMessage(account, ChatColor.translateAlternateColorCodes('&', message));
                      CommonPlugin.getInstance()
-                             .getMemberManager()
-                             .getMembers()
+                             .getAccountManager()
+                             .getAccounts()
                              .stream()
-                             .filter(m -> m.isStaff() && m.getMemberConfiguration().isSeeingStaffChat())
+                             .filter(m -> m.isStaff() && m.getAccountConfiguration().isSeeingStaffChat())
                              .forEach(m -> m.sendMessage(staffMessage));
-                     CommonPlugin.getInstance().getServerData().sendPacket(new StaffchatDiscordPacket(member.getUniqueId(), member.getServerGroup(), message));
+                     CommonPlugin.getInstance().getServerData().sendPacket(new StaffchatDiscordPacket(account.getUniqueId(), account.getServerGroup(), message));
                      event.setCancelled(true);
                   }
                } else {
                   if (event.getMessage().length() > 1) {
-                     if (event.getMessage().startsWith("%") && member.hasPermission("command.staffchat")) {
-                        if (!member.getMemberConfiguration().isSeeingStaffChat()) {
+                     if (event.getMessage().startsWith("%") && account.hasPermission("command.staffchat")) {
+                        if (!account.getAccountConfiguration().isSeeingStaffChat()) {
                            event.setCancelled(true);
-                           member.sendMessage("§cAtiva a visualização do staffchat para poder falar no staffchat.");
+                           account.sendMessage("§cAtiva a visualização do staffchat para poder falar no staffchat.");
                            return;
                         }
 
-                        String staffMessage = this.getStaffchatMessage(member, event.getMessage().substring(1));
+                        String staffMessage = this.getStaffchatMessage(account, event.getMessage().substring(1));
                         CommonPlugin.getInstance()
-                                .getMemberManager()
-                                .getMembers()
+                                .getAccountManager()
+                                .getAccounts()
                                 .stream()
-                                .filter(m -> m.isStaff() && m.getMemberConfiguration().isSeeingStaffChat())
+                                .filter(m -> m.isStaff() && m.getAccountConfiguration().isSeeingStaffChat())
                                 .forEach(m -> m.sendMessage(staffMessage));
                         CommonPlugin.getInstance()
                                 .getServerData()
-                                .sendPacket(new StaffchatDiscordPacket(member.getUniqueId(), member.getServerGroup(), message));
+                                .sendPacket(new StaffchatDiscordPacket(account.getUniqueId(), account.getServerGroup(), message));
                         event.setCancelled(true);
-                     } else if (event.getMessage().startsWith("@") && member.getParty() != null) {
-                        Punish punish = member.getPunishConfiguration().getActualPunish(PunishType.MUTE);
+                     } else if (event.getMessage().startsWith("@") && account.getParty() != null) {
+                        Punish punish = account.getPunishConfiguration().getActualPunish(PunishType.MUTE);
                         if (punish != null) {
-                           member.sendMessage(
-                                   new MessageBuilder(punish.getMuteMessage(member.getLanguage()))
+                           account.sendMessage(
+                                   new MessageBuilder(punish.getMuteMessage(account.getLanguage()))
                                            .setHoverEvent(
                                                    "§fPunido em: §7"
                                                            + CommonConst.DATE_FORMAT.format(punish.getCreatedAt())
                                                            + "\n§fExpire em: §7"
-                                                           + (punish.isPermanent() ? "§cnunca" : DateUtils.getTime(member.getLanguage(), punish.getExpireAt()))
+                                                           + (punish.isPermanent() ? "§cnunca" : DateUtils.getTime(account.getLanguage(), punish.getExpireAt()))
                                            )
                                            .create()
                            );
@@ -96,7 +96,7 @@ public class MessageListener implements Listener {
                            return;
                         }
 
-                        member.getParty().chat(member, event.getMessage().substring(1));
+                        account.getParty().chat(account, event.getMessage().substring(1));
                         event.setCancelled(true);
                      }
                   }
@@ -106,11 +106,11 @@ public class MessageListener implements Listener {
       }
    }
 
-   private String getStaffchatMessage(Member member, String message) {
+   private String getStaffchatMessage(Account account, String message) {
       return "§e[STAFF] "
-              + CommonPlugin.getInstance().getPluginInfo().getTagByGroup(member.getServerGroup()).getStrippedColor()
+              + CommonPlugin.getInstance().getPluginInfo().getTagByGroup(account.getServerGroup()).getStrippedColor()
               + " "
-              + member.getPlayerName()
+              + account.getPlayerName()
               + "§7: §f"
               + ChatColor.translateAlternateColorCodes('&', message);
    }
@@ -121,10 +121,10 @@ public class MessageListener implements Listener {
       String label = event.getCommand();
       String[] args = event.getArgs();
       if (!label.startsWith("teleport") && !label.startsWith("tp")) {
-         Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-         if (!member.getLoginConfiguration().isLogged() && !CommonConst.ALLOWED_COMMAND_LOGIN.contains(label)) {
+         Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+         if (!account.getLoginConfiguration().isLogged() && !CommonConst.ALLOWED_COMMAND_LOGIN.contains(label)) {
             event.setCancelled(true);
-            player.sendMessage(member.getLanguage().t("login.message.not-allowed"));
+            player.sendMessage(account.getLanguage().t("login.message.not-allowed"));
          }
       } else if (args.length == 1) {
          UUID uniqueId = UUIDParser.parse(args[0]);

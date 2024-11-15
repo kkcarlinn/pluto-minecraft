@@ -18,6 +18,7 @@ repositories {
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://repo.dmulloy2.net/repository/releases/")
     maven("https://mvn.lumine.io/repository/maven-public/")
+    mavenLocal();
 }
 
 dependencies {

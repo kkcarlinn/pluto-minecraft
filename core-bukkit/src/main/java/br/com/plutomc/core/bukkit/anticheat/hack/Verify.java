@@ -4,7 +4,7 @@ import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.core.bukkit.anticheat.gamer.UserData;
 import br.com.plutomc.core.bukkit.anticheat.StormCore;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.MetadataValue;
@@ -13,7 +13,7 @@ public interface Verify extends Listener {
    HackType getHackType();
 
    default boolean isPlayerBypass(Player player) {
-      return CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId(), BukkitMember.class).isAnticheatBypass();
+      return CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId(), BukkitAccount.class).isAnticheatBypass();
    }
 
    default boolean isIgnore(Player player) {
@@ -35,7 +35,7 @@ public interface Verify extends Listener {
    }
 
    default UserData getUserData(Player player) {
-      return CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId(), BukkitMember.class).getUserData();
+      return CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId(), BukkitAccount.class).getUserData();
    }
 
    default void alert(Player player) {

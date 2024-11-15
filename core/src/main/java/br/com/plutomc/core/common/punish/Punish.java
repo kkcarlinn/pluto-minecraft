@@ -97,7 +97,7 @@ public class Punish {
          id = CodeCreator.DEFAULT_CREATOR.random(6);
       } while(
          CommonPlugin.getInstance()
-               .getMemberData()
+               .getAccountData()
                .getQuery()
                .getCollection()
                .find(Filters.eq("punishConfiguration.punishMap." + punishType.name() + ".id", id))

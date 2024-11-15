@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import br.com.plutomc.core.common.packet.Packet;
 import br.com.plutomc.core.common.packet.PacketType;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.utils.skin.Skin;
 
 public class SkinChange extends Packet {
@@ -18,11 +18,11 @@ public class SkinChange extends Packet {
       this.skin = skin;
    }
 
-   public SkinChange(Member member) {
+   public SkinChange(Account account) {
       super(PacketType.SKIN_CHANGE);
       this.bungeecord();
-      this.playerId = member.getUniqueId();
-      this.skin = member.getSkin();
+      this.playerId = account.getUniqueId();
+      this.skin = account.getSkin();
    }
 
    public UUID getPlayerId() {

@@ -6,7 +6,7 @@ import br.com.plutomc.core.bungee.event.ServerUpdateEvent;
 import br.com.plutomc.core.bungee.event.packet.PacketReceiveEvent;
 import br.com.plutomc.core.bungee.event.player.PlayerFieldUpdateEvent;
 import br.com.plutomc.core.bungee.event.player.PlayerPunishEvent;
-import br.com.plutomc.core.bungee.member.BungeeMember;
+import br.com.plutomc.core.bungee.account.BungeeAccount;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.JsonObject;
@@ -20,7 +20,7 @@ import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.backend.data.DataServerMessage;
 import br.com.plutomc.core.bungee.command.BungeeCommandSender;
 import br.com.plutomc.core.common.command.CommandSender;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.packet.Packet;
 import br.com.plutomc.core.common.packet.PacketType;
 import br.com.plutomc.core.common.packet.types.PunishPlayerPacket;
@@ -49,7 +49,7 @@ public class DataListener implements Listener {
    public void onPluginMessage(PluginMessageEvent event) {
       if (event.getTag().equals("BungeeCord") && event.getSender() instanceof Server && event.getReceiver() instanceof ProxiedPlayer) {
          ProxiedPlayer proxiedPlayer = (ProxiedPlayer)event.getReceiver();
-         Member player = CommonPlugin.getInstance().getMemberManager().getMember(proxiedPlayer.getUniqueId());
+         Account player = CommonPlugin.getInstance().getAccountManager().getAccount(proxiedPlayer.getUniqueId());
          ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
          String subChannel = in.readUTF();
          switch(subChannel) {
@@ -91,7 +91,7 @@ public class DataListener implements Listener {
       }
    }
 
-   public boolean searchServer(Member player, ProxiedPlayer proxiedPlayer, ServerType serverType, boolean silent) {
+   public boolean searchServer(Account player, ProxiedPlayer proxiedPlayer, ServerType serverType, boolean silent) {
       ProxiedServer server = BungeeMain.getInstance().getServerManager().getBalancer(serverType).next();
       if (server == null || server.getServerInfo() == null) {
          return false;
@@ -115,13 +115,13 @@ public class DataListener implements Listener {
 
    @EventHandler
    public void onPostLogin(PostLoginEvent event) {
-      CommonPlugin.getInstance().getServerData().setTotalMembers(BungeeCord.getInstance().getOnlineCount());
+      CommonPlugin.getInstance().getServerData().setTotalPlayers(BungeeCord.getInstance().getOnlineCount());
       BungeeMain.getInstance().setPlayersRecord(Math.max(BungeeCord.getInstance().getOnlineCount(), BungeeMain.getInstance().getPlayersRecord()));
    }
 
    @EventHandler
    public void onPlayerDisconnect(PlayerDisconnectEvent event) {
-      CommonPlugin.getInstance().getServerData().setTotalMembers(BungeeCord.getInstance().getOnlineCount() - 1);
+      CommonPlugin.getInstance().getServerData().setTotalPlayers(BungeeCord.getInstance().getOnlineCount() - 1);
    }
 
    @EventHandler
@@ -168,21 +168,21 @@ public class DataListener implements Listener {
             break;
          case PUNISH_PLAYER:
             PunishPlayerPacket punishPlayer = (PunishPlayerPacket)event.getPacket();
-            Member member = CommonPlugin.getInstance().getMemberManager().getMember(punishPlayer.getPlayerId());
+            Account account = CommonPlugin.getInstance().getAccountManager().getAccount(punishPlayer.getPlayerId());
             Punish punish = punishPlayer.getPunish();
-            if (member == null) {
-               member = CommonPlugin.getInstance().getMemberData().loadMember(punishPlayer.getPlayerId());
+            if (account == null) {
+               account = CommonPlugin.getInstance().getAccountData().loadAccount(punishPlayer.getPlayerId());
             }
 
             ProxyServer.getInstance()
                     .getPluginManager()
                     .callEvent(
                             new PlayerPunishEvent(
-                                    member,
+                                    account,
                                     punishPlayer.getPunish(),
                                     (CommandSender)(CommonConst.CONSOLE_ID.equals(punish.getPunisherId())
                                             ? new BungeeCommandSender(ProxyServer.getInstance().getConsole())
-                                            : CommonPlugin.getInstance().getMemberManager().getMember(punish.getPunisherId()))
+                                            : CommonPlugin.getInstance().getAccountManager().getAccount(punish.getPunisherId()))
                             )
                     );
       }
@@ -209,24 +209,24 @@ public class DataListener implements Listener {
                return;
             }
 
-            Member player = CommonPlugin.getInstance().getMemberManager().getMember(uuid);
+            Account player = CommonPlugin.getInstance().getAccountManager().getAccount(uuid);
             if (player == null) {
                return;
             }
 
             try {
-               Field f = Reflection.getField(Member.class, jsonObject.get("field").getAsString());
+               Field f = Reflection.getField(Account.class, jsonObject.get("field").getAsString());
                Object object = CommonConst.GSON.fromJson(jsonObject.get("value"), f.getGenericType());
                f.setAccessible(true);
                f.set(player, object);
-               ProxyServer.getInstance().getPluginManager().callEvent(new PlayerFieldUpdateEvent((BungeeMember)player, jsonObject.get("field").getAsString()));
+               ProxyServer.getInstance().getPluginManager().callEvent(new PlayerFieldUpdateEvent((BungeeAccount)player, jsonObject.get("field").getAsString()));
             } catch (IllegalArgumentException | IllegalAccessException | SecurityException var13) {
                var13.printStackTrace();
             }
 
             if (jsonObject.get("field").getAsString().toLowerCase().contains("configuration")) {
                try {
-                  Field field = Member.class.getDeclaredField(jsonObject.get("field").getAsString());
+                  Field field = Account.class.getDeclaredField(jsonObject.get("field").getAsString());
                   field.setAccessible(true);
                   Object object = field.get(player);
                   Field memberField = object.getClass().getDeclaredField("member");

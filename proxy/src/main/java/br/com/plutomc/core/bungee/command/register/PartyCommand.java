@@ -6,20 +6,19 @@ import java.util.Map;
 import java.util.OptionalInt;
 import java.util.UUID;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bungee.member.BungeeMember;
-import br.com.plutomc.core.bungee.member.BungeeParty;
+import br.com.plutomc.core.bungee.account.BungeeAccount;
+import br.com.plutomc.core.bungee.account.BungeeParty;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
 import br.com.plutomc.core.common.manager.PartyManager;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.Profile;
-import br.com.plutomc.core.common.member.party.Party;
-import br.com.plutomc.core.common.member.party.PartyRole;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.Profile;
+import br.com.plutomc.core.common.account.party.Party;
+import br.com.plutomc.core.common.account.party.PartyRole;
 import br.com.plutomc.core.common.utils.string.MessageBuilder;
 import br.com.plutomc.core.common.utils.string.StringFormat;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class PartyCommand implements CommandClass {
@@ -29,7 +28,7 @@ public class PartyCommand implements CommandClass {
       console = false
    )
    public void partychatCommand(CommandArgs cmdArgs) {
-      Member sender = (Member)cmdArgs.getSender();
+      Account sender = (Account)cmdArgs.getSender();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <mensagem>§e para mandar uma mensagem na party.");
@@ -45,7 +44,7 @@ public class PartyCommand implements CommandClass {
       console = false
    )
    public void partyCommand(CommandArgs cmdArgs) {
-      Member sender = (Member)cmdArgs.getSender();
+      Account sender = (Account)cmdArgs.getSender();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <disband/acabar>§e para acabar com sua party.");
@@ -107,24 +106,24 @@ public class PartyCommand implements CommandClass {
                   return;
                }
 
-               Member member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[1]);
-               if (member == null) {
+               Account account = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[1]);
+               if (account == null) {
                   sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[1]));
                   return;
                }
 
-               if (member.getParty() == null) {
-                  sender.sendMessage("§cO jogador " + member.getPlayerName() + " não tem uma party.");
+               if (account.getParty() == null) {
+                  sender.sendMessage("§cO jogador " + account.getPlayerName() + " não tem uma party.");
                   return;
                }
 
-               if (member.getParty().getPartyPrivacy() == Party.PartyPrivacy.PRIVATE) {
+               if (account.getParty().getPartyPrivacy() == Party.PartyPrivacy.PRIVATE) {
                   sender.sendMessage("§cEsta party é privada, somente jogadores convidados podem entrar.");
                   return;
                }
 
-               member.getParty().addMember(Profile.from(sender));
-               sender.setParty(member.getParty());
+               account.getParty().addMember(Profile.from(sender));
+               sender.setParty(account.getParty());
                break;
             case "teleportar":
             case "warp":
@@ -134,7 +133,7 @@ public class PartyCommand implements CommandClass {
                }
 
                if (sender.getParty().hasRole(sender.getUniqueId(), PartyRole.OWNER)) {
-                  BungeeMember bungeeMember = (BungeeMember)sender;
+                  BungeeAccount bungeeMember = (BungeeAccount)sender;
                   ServerInfo info = bungeeMember.getProxiedPlayer().getServer().getInfo();
                   sender.getParty().getMembers().stream().map(id -> ProxyServer.getInstance().getPlayer(id)).forEach(player -> {
                      if (player != null) {
@@ -163,13 +162,13 @@ public class PartyCommand implements CommandClass {
                   return;
                }
 
-               member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[1]);
-               if (member == null) {
+               account = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[1]);
+               if (account == null) {
                   sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[1]));
                   return;
                }
 
-               if (sender.getUniqueId().equals(member.getUniqueId())) {
+               if (sender.getUniqueId().equals(account.getUniqueId())) {
                   sender.sendMessage("§cVocê não pode se expulsar da party.");
                   return;
                }
@@ -179,7 +178,7 @@ public class PartyCommand implements CommandClass {
                   return;
                }
 
-               party.kickMember(sender, member);
+               party.kickMember(sender, account);
                break;
             case "acabar":
             case "disband":
@@ -241,15 +240,15 @@ public class PartyCommand implements CommandClass {
                      .findFirst()
                      .orElse(null);
                } else {
-                  member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[1]);
-                  if (member == null) {
+                  account = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[1]);
+                  if (account == null) {
                      sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[1]));
                      return;
                   }
 
-                  inviteInfo = CommonPlugin.getInstance().getPartyManager().getPartyInvitesMap().get(sender.getUniqueId()).get(member.getUniqueId());
+                  inviteInfo = CommonPlugin.getInstance().getPartyManager().getPartyInvitesMap().get(sender.getUniqueId()).get(account.getUniqueId());
                   if (inviteInfo == null) {
-                     sender.sendMessage("§cO jogador " + member.getPlayerName() + " não te convidou para party.");
+                     sender.sendMessage("§cO jogador " + account.getPlayerName() + " não te convidou para party.");
                      return;
                   }
                }
@@ -282,24 +281,24 @@ public class PartyCommand implements CommandClass {
                   return;
                }
 
-               member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[inviteArg ? 1 : 0]);
-               if (member == null) {
+               account = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[inviteArg ? 1 : 0]);
+               if (account == null) {
                   sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[inviteArg ? 1 : 0]));
                   return;
                }
 
-               if (sender.getUniqueId().equals(member.getUniqueId())) {
+               if (sender.getUniqueId().equals(account.getUniqueId())) {
                   sender.sendMessage("§cVocê não pode convidar este jogador.");
                   return;
                }
 
-               if (!member.getMemberConfiguration().isPartyInvites()) {
-                  sender.sendMessage("§cO jogador " + member.getPlayerName() + " não está aceitando convites para party.");
+               if (!account.getAccountConfiguration().isPartyInvites()) {
+                  sender.sendMessage("§cO jogador " + account.getPlayerName() + " não está aceitando convites para party.");
                   return;
                }
 
-               if (member.getParty() != null) {
-                  sender.sendMessage("§cO jogador " + member.getPlayerName() + " já está em uma party.");
+               if (account.getParty() != null) {
+                  sender.sendMessage("§cO jogador " + account.getPlayerName() + " já está em uma party.");
                   return;
                }
 
@@ -312,7 +311,7 @@ public class PartyCommand implements CommandClass {
                Map<UUID, PartyManager.InviteInfo> partyInvites = CommonPlugin.getInstance()
                   .getPartyManager()
                   .getPartyInvitesMap()
-                  .computeIfAbsent(member.getUniqueId(), v -> new HashMap());
+                  .computeIfAbsent(account.getUniqueId(), v -> new HashMap());
                if (partyInvites.containsKey(sender.getUniqueId())) {
                   inviteInfo = partyInvites.get(sender.getUniqueId());
                   if (inviteInfo.getCreatedAt() + 180000L > System.currentTimeMillis()) {
@@ -321,10 +320,10 @@ public class PartyCommand implements CommandClass {
                   }
                }
 
-               CommonPlugin.getInstance().getPartyManager().invite(sender.getUniqueId(), member.getUniqueId(), party);
-               sender.sendMessage("§aO convite para party foi enviado para " + member.getPlayerName() + ".");
-               member.sendMessage("§aVocê foi convidado para party de " + sender.getPlayerName() + ".");
-               member.sendMessage(
+               CommonPlugin.getInstance().getPartyManager().invite(sender.getUniqueId(), account.getUniqueId(), party);
+               sender.sendMessage("§aO convite para party foi enviado para " + account.getPlayerName() + ".");
+               account.sendMessage("§aVocê foi convidado para party de " + sender.getPlayerName() + ".");
+               account.sendMessage(
                        new MessageBuilder("§aClique ").create(),
                        new MessageBuilder("§a§lAQUI")
                           .setHoverEvent("§aClique aqui para aceitar o convite.")
@@ -335,11 +334,11 @@ public class PartyCommand implements CommandClass {
       }
    }
 
-   public Party createParty(Member member) {
+   public Party createParty(Account account) {
       UUID partyId = CommonPlugin.getInstance().getPartyData().getPartyId();
-      Party party = new BungeeParty(partyId, member);
-      member.setPartyId(partyId);
-      member.sendMessage("§aSua party foi criada.");
+      Party party = new BungeeParty(partyId, account);
+      account.setPartyId(partyId);
+      account.sendMessage("§aSua party foi criada.");
       CommonPlugin.getInstance().getPartyData().createParty(party);
       CommonPlugin.getInstance().getPartyManager().loadParty(party);
       return party;

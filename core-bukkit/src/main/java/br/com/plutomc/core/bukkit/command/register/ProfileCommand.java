@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
 import br.com.plutomc.core.common.command.CommandSender;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.Profile;
-import br.com.plutomc.core.common.member.configuration.LoginConfiguration;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.Profile;
+import br.com.plutomc.core.common.account.configuration.LoginConfiguration;
 import br.com.plutomc.core.common.permission.Group;
 import br.com.plutomc.core.common.permission.GroupInfo;
 import br.com.plutomc.core.common.permission.Tag;
@@ -49,14 +49,14 @@ public class ProfileCommand implements CommandClass {
       console = false
    )
    public void blockCommand(CommandArgs cmdArgs) {
-      Member sender = cmdArgs.getSenderAsMember();
+      Account sender = cmdArgs.getSenderAsMember();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <player>§e para bloquear um jogador.");
       } else {
-         Member target = CommonPlugin.getInstance().getMemberManager().getMemberByName(cmdArgs.getArgs()[0]);
+         Account target = CommonPlugin.getInstance().getAccountManager().getAccountByName(cmdArgs.getArgs()[0]);
          if (target == null) {
-            target = CommonPlugin.getInstance().getMemberData().loadMember(cmdArgs.getArgs()[0], true);
+            target = CommonPlugin.getInstance().getAccountData().loadAccount(cmdArgs.getArgs()[0], true);
             if (target == null) {
                sender.sendMessage(sender.getLanguage().t("account-doesnt-exist", "%player%", cmdArgs.getArgs()[0]));
                return;
@@ -77,14 +77,14 @@ public class ProfileCommand implements CommandClass {
       console = false
    )
    public void unblockCommand(CommandArgs cmdArgs) {
-      Member sender = cmdArgs.getSenderAsMember();
+      Account sender = cmdArgs.getSenderAsMember();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <player>§e para desbloquear um jogador.");
       } else {
-         Member target = CommonPlugin.getInstance().getMemberManager().getMemberByName(cmdArgs.getArgs()[0]);
+         Account target = CommonPlugin.getInstance().getAccountManager().getAccountByName(cmdArgs.getArgs()[0]);
          if (target == null) {
-            target = CommonPlugin.getInstance().getMemberData().loadMember(cmdArgs.getArgs()[0], true);
+            target = CommonPlugin.getInstance().getAccountData().loadAccount(cmdArgs.getArgs()[0], true);
             if (target == null) {
                sender.sendMessage(sender.getLanguage().t("account-doesnt-exist", "%player%", cmdArgs.getArgs()[0]));
                return;
@@ -105,7 +105,7 @@ public class ProfileCommand implements CommandClass {
       console = false
    )
    public void pingCommand(CommandArgs cmdArgs) {
-      BukkitMember member = cmdArgs.getSenderAsMember(BukkitMember.class);
+      BukkitAccount member = cmdArgs.getSenderAsMember(BukkitAccount.class);
       member.sendMessage("§aSeu ping é " + ((CraftPlayer)member.getPlayer()).getHandle().ping + "ms.");
    }
 
@@ -129,17 +129,17 @@ public class ProfileCommand implements CommandClass {
                sender.sendMessage("§cVocê agora não receberá mais mensagens privadas.");
                break;
             default:
-               if (sender instanceof Member) {
-                  Member member = (Member)sender;
-                  Punish punish = member.getPunishConfiguration().getActualPunish(PunishType.MUTE);
+               if (sender instanceof Account) {
+                  Account account = (Account)sender;
+                  Punish punish = account.getPunishConfiguration().getActualPunish(PunishType.MUTE);
                   if (punish != null) {
-                     member.sendMessage(
-                             new MessageBuilder(punish.getMuteMessage(member.getLanguage()))
+                     account.sendMessage(
+                             new MessageBuilder(punish.getMuteMessage(account.getLanguage()))
                                      .setHoverEvent(
                                              "§aPunido em: §7"
                                                      + CommonConst.DATE_FORMAT.format(punish.getCreatedAt())
                                                      + "\n§aExpire em: §7"
-                                                     + (punish.isPermanent() ? "§cnunca" : DateUtils.formatDifference(member.getLanguage(), punish.getExpireAt() / 1000L))
+                                                     + (punish.isPermanent() ? "§cnunca" : DateUtils.formatDifference(account.getLanguage(), punish.getExpireAt() / 1000L))
                                      )
                                      .create()
                      );
@@ -149,7 +149,7 @@ public class ProfileCommand implements CommandClass {
 
                CommandSender target = (CommandSender)(args[0].equalsIgnoreCase("console")
                        ? new BukkitCommandSender(Bukkit.getConsoleSender())
-                       : CommonPlugin.getInstance().getMemberManager().getMemberByName(args[0]));
+                       : CommonPlugin.getInstance().getAccountManager().getAccountByName(args[0]));
                if (target == null) {
                   sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[0]));
                   return;
@@ -182,17 +182,17 @@ public class ProfileCommand implements CommandClass {
       } else if (!sender.hasReply()) {
          sender.sendMessage("§cVocê não possui mensagem para responder.");
       } else {
-         if (sender instanceof Member) {
-            Member member = (Member)sender;
-            Punish punish = member.getPunishConfiguration().getActualPunish(PunishType.MUTE);
+         if (sender instanceof Account) {
+            Account account = (Account)sender;
+            Punish punish = account.getPunishConfiguration().getActualPunish(PunishType.MUTE);
             if (punish != null) {
-               member.sendMessage(
-                       new MessageBuilder(punish.getMuteMessage(member.getLanguage()))
+               account.sendMessage(
+                       new MessageBuilder(punish.getMuteMessage(account.getLanguage()))
                                .setHoverEvent(
                                        "§aPunido em: §7"
                                                + CommonConst.DATE_FORMAT.format(punish.getCreatedAt())
                                                + "\n§aExpire em: §7"
-                                               + (punish.isPermanent() ? "§cnunca" : DateUtils.formatDifference(member.getLanguage(), punish.getExpireAt() / 1000L))
+                                               + (punish.isPermanent() ? "§cnunca" : DateUtils.formatDifference(account.getLanguage(), punish.getExpireAt() / 1000L))
                                )
                                .create()
                );
@@ -202,7 +202,7 @@ public class ProfileCommand implements CommandClass {
 
          CommandSender target = (CommandSender)(sender.getReplyId() == CommonConst.CONSOLE_ID
                  ? BukkitConst.CONSOLE_SENDER
-                 : CommonPlugin.getInstance().getMemberManager().getMember(sender.getReplyId()));
+                 : CommonPlugin.getInstance().getAccountManager().getAccount(sender.getReplyId()));
          if (target == null) {
             sender.sendMessage("§cO último jogador que você te mandou mensagem não está mais online.");
          } else if (target.isUserBlocked(Profile.from(sender))) {
@@ -220,7 +220,7 @@ public class ProfileCommand implements CommandClass {
       console = false
    )
    public void profileCommand(CommandArgs cmdArgs) {
-      new ProfileInventory(cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer());
+      new ProfileInventory(cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer());
    }
 
    @CommandFramework.Command(
@@ -229,7 +229,7 @@ public class ProfileCommand implements CommandClass {
       console = false
    )
    public void preferencesCommand(CommandArgs cmdArgs) {
-      new PreferencesInventory(cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer());
+      new PreferencesInventory(cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer());
    }
 
    @CommandFramework.Command(
@@ -239,7 +239,7 @@ public class ProfileCommand implements CommandClass {
    )
    public void accountCommand(CommandArgs cmdArgs) {
       CommandSender sender = cmdArgs.getSender();
-      Member member = cmdArgs.isPlayer() ? cmdArgs.getSenderAsMember() : null;
+      Account account = cmdArgs.isPlayer() ? cmdArgs.getSenderAsMember() : null;
       if (!cmdArgs.isPlayer() && cmdArgs.getArgs().length == 0) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <player>§e para ver o perfil de alguém.");
       } else {
@@ -249,32 +249,32 @@ public class ProfileCommand implements CommandClass {
                return;
             }
 
-            member = CommonPlugin.getInstance().getMemberManager().getMemberByName(cmdArgs.getArgs()[0]);
-            if (member == null) {
-               member = CommonPlugin.getInstance().getMemberData().loadMember(cmdArgs.getArgs()[0], true);
-               if (member == null) {
+            account = CommonPlugin.getInstance().getAccountManager().getAccountByName(cmdArgs.getArgs()[0]);
+            if (account == null) {
+               account = CommonPlugin.getInstance().getAccountData().loadAccount(cmdArgs.getArgs()[0], true);
+               if (account == null) {
                   sender.sendMessage(sender.getLanguage().t("account-doesnt-exist", "%player%", cmdArgs.getArgs()[0]));
                   return;
                }
             }
          }
 
-         Group actualGroup = member.getServerGroup();
-         GroupInfo groupInfo = member.getServerGroup(actualGroup.getGroupName());
+         Group actualGroup = account.getServerGroup();
+         GroupInfo groupInfo = account.getServerGroup(actualGroup.getGroupName());
          sender.sendMessage(" ");
-         sender.sendMessage("§a  " + (sender.getUniqueId() == member.getUniqueId() ? "Sua conta" : "Conta do " + member.getPlayerName()));
-         sender.sendMessage("    §aPrimeiro login: §7" + CommonPlugin.getInstance().formatTime(member.getFirstLogin()));
+         sender.sendMessage("§a  " + (sender.getUniqueId() == account.getUniqueId() ? "Sua conta" : "Conta do " + account.getPlayerName()));
+         sender.sendMessage("    §aPrimeiro login: §7" + CommonPlugin.getInstance().formatTime(account.getFirstLogin()));
          sender.sendMessage(
             "    §aUltimo login: §7"
-               + CommonPlugin.getInstance().formatTime(member.getLastLogin())
+               + CommonPlugin.getInstance().formatTime(account.getLastLogin())
                + (
-                  member.isOnline()
+                  account.isOnline()
                      ? ""
-                     : " (há " + DateUtils.formatDifference(sender.getLanguage(), (System.currentTimeMillis() - member.getLastLogin()) / 1000L) + ")"
+                     : " (há " + DateUtils.formatDifference(sender.getLanguage(), (System.currentTimeMillis() - account.getLastLogin()) / 1000L) + ")"
                )
          );
-         sender.sendMessage("    §aTempo total de jogo: §7" + DateUtils.formatDifference(sender.getLanguage(), member.getOnlineTime() / 1000L));
-         sender.sendMessage("    §aTipo de conta: §7" + StringFormat.formatString(member.getLoginConfiguration().getAccountType().name()));
+         sender.sendMessage("    §aTempo total de jogo: §7" + DateUtils.formatDifference(sender.getLanguage(), account.getOnlineTime() / 1000L));
+         sender.sendMessage("    §aTipo de conta: §7" + StringFormat.formatString(account.getLoginConfiguration().getAccountType().name()));
          sender.sendMessage(" ");
          sender.sendMessage(
             new MessageBuilder("    §aGrupo principal: §7" + StringFormat.formatString(actualGroup.getGroupName()))
@@ -292,7 +292,7 @@ public class ProfileCommand implements CommandClass {
                .setClickEvent("/group info " + actualGroup.getGroupName())
                .create()
          );
-         List<Group> list = member.getGroups()
+         List<Group> list = account.getGroups()
             .keySet()
             .stream()
             .filter(groupName -> !actualGroup.getGroupName().equals(groupName))
@@ -300,7 +300,7 @@ public class ProfileCommand implements CommandClass {
             .collect(Collectors.toList());
          if (!list.isEmpty()) {
             MessageBuilder messageBuilder = new MessageBuilder("    §aGrupos adicionais: §7");
-            Set<Entry<String, GroupInfo>> entrySet = new HashSet<>(member.getGroups().entrySet());
+            Set<Entry<String, GroupInfo>> entrySet = new HashSet<>(account.getGroups().entrySet());
             entrySet.removeIf(entryx -> entryx.getKey().equalsIgnoreCase(actualGroup.getGroupName()));
             int i = 1;
 
@@ -327,29 +327,29 @@ public class ProfileCommand implements CommandClass {
             sender.sendMessage(messageBuilder.create());
          }
 
-         if (sender.isStaff() || sender.getUniqueId() == member.getUniqueId()) {
-            if (!member.getPermissions().isEmpty()) {
-               sender.sendMessage("    §aPermissões: §7" + Joiner.on(", ").join(member.getPermissions()));
+         if (sender.isStaff() || sender.getUniqueId() == account.getUniqueId()) {
+            if (!account.getPermissions().isEmpty()) {
+               sender.sendMessage("    §aPermissões: §7" + Joiner.on(", ").join(account.getPermissions()));
             }
 
-            if (member.getLastIpAddress() != null && sender.getServerGroup().getId() >= member.getServerGroup().getId()) {
+            if (account.getLastIpAddress() != null && sender.getServerGroup().getId() >= account.getServerGroup().getId()) {
                sender.sendMessage("");
-               sender.sendMessage("    §aEndereço ip: §7" + member.getLastIpAddress());
+               sender.sendMessage("    §aEndereço ip: §7" + account.getLastIpAddress());
             }
          }
 
-         if (member.isOnline()) {
-            if (member.getLastIpAddress() == null || sender.getServerGroup().getId() < member.getServerGroup().getId()) {
+         if (account.isOnline()) {
+            if (account.getLastIpAddress() == null || sender.getServerGroup().getId() < account.getServerGroup().getId()) {
                sender.sendMessage("");
             }
 
             sender.sendMessage(
-               new MessageBuilder("    §aServidor atual: §7" + member.getActualServerId())
-                  .setClickEvent(Action.SUGGEST_COMMAND, "/connect " + member.getActualServerId())
+               new MessageBuilder("    §aServidor atual: §7" + account.getActualServerId())
+                  .setClickEvent(Action.SUGGEST_COMMAND, "/connect " + account.getActualServerId())
                   .setHoverEvent("§aClique para ir ao servidor.")
                   .create()
             );
-            sender.sendMessage("    §aTempo da sessão atual: §7" + DateUtils.formatDifference(sender.getLanguage(), member.getSessionTime() / 1000L));
+            sender.sendMessage("    §aTempo da sessão atual: §7" + DateUtils.formatDifference(sender.getLanguage(), account.getSessionTime() / 1000L));
             sender.sendMessage("    §aO jogador está online no momento.");
          } else {
             sender.sendMessage("    §cO jogador está offline no momento.");
@@ -363,21 +363,21 @@ public class ProfileCommand implements CommandClass {
 
             boolean temp = args.length >= 4;
             long expireTime = temp ? DateUtils.getTime(args[3]) : -1L;
-            member.addServerGroup(group.getGroupName(), new GroupInfo(sender, expireTime));
-            member.setTag(member.getDefaultTag());
-            member.getMemberConfiguration().setStaffChat(false);
+            account.addServerGroup(group.getGroupName(), new GroupInfo(sender, expireTime));
+            account.setTag(account.getDefaultTag());
+            account.getAccountConfiguration().setStaffChat(false);
             sender.sendMessage(
                     "§aVocê adicionou o cargo "
                             + group.getGroupName()
                             + " ao jogador "
-                            + member.getPlayerName()
+                            + account.getPlayerName()
                             + " por tempo "
                             + (temp ? DateUtils.getTime(sender.getLanguage(), expireTime) : "indeterminado")
                             + "."
             );
             this.staffLog(
                     "O jogador "
-                            + member.getPlayerName()
+                            + account.getPlayerName()
                             + " recebeu cargo "
                             + group.getRealPrefix()
                             + " §7por "
@@ -388,16 +388,16 @@ public class ProfileCommand implements CommandClass {
             );
          } else if(args[1].equalsIgnoreCase("remove")) {
             Group group = CommonPlugin.getInstance().getPluginInfo().getGroupByName(args[2]);
-            if (member.hasGroup(group.getGroupName())) {
-               member.removeServerGroup(group.getGroupName());
-               member.setTag(member.getDefaultTag());
-               member.getMemberConfiguration().setStaffChat(false);
-               sender.sendMessage("§aVocê removeu o cargo " + group.getGroupName() + " do jogador " + member.getPlayerName() + ".");
+            if (account.hasGroup(group.getGroupName())) {
+               account.removeServerGroup(group.getGroupName());
+               account.setTag(account.getDefaultTag());
+               account.getAccountConfiguration().setStaffChat(false);
+               sender.sendMessage("§aVocê removeu o cargo " + group.getGroupName() + " do jogador " + account.getPlayerName() + ".");
                this.staffLog(
-                       "O jogador " + member.getPlayerName() + " teve o seu cargo " + group.getRealPrefix() + " §7removido pelo " + sender.getName(), true
+                       "O jogador " + account.getPlayerName() + " teve o seu cargo " + group.getRealPrefix() + " §7removido pelo " + sender.getName(), true
                );
             } else {
-               sender.sendMessage("§cO player " + member.getPlayerName() + " não tem o grupo " + group.getGroupName() + ".");
+               sender.sendMessage("§cO player " + account.getPlayerName() + " não tem o grupo " + group.getGroupName() + ".");
             }
          }
       }
@@ -409,7 +409,7 @@ public class ProfileCommand implements CommandClass {
       console = false
    )
    public void tagCommand(CommandArgs cmdArgs) {
-      Member player = (BukkitMember)cmdArgs.getSender();
+      Account player = (BukkitAccount)cmdArgs.getSender();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          List<Tag> tags = CommonPlugin.getInstance()
@@ -477,7 +477,7 @@ public class ProfileCommand implements CommandClass {
       console = false
    )
    public void fakeresetCommand(CommandArgs cmdArgs) {
-      BukkitMember sender = cmdArgs.getSenderAsMember(BukkitMember.class);
+      BukkitAccount sender = cmdArgs.getSenderAsMember(BukkitAccount.class);
       if (!sender.isUsingFake()) {
          sender.sendMessage("§cVocê não está usando fake.");
       } else {
@@ -502,7 +502,7 @@ public class ProfileCommand implements CommandClass {
       console = false
    )
    public void fakeCommand(CommandArgs cmdArgs) {
-      BukkitMember sender = cmdArgs.getSenderAsMember(BukkitMember.class);
+      BukkitAccount sender = cmdArgs.getSenderAsMember(BukkitAccount.class);
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <player>§e para alterar sua skin.");
@@ -516,15 +516,15 @@ public class ProfileCommand implements CommandClass {
             UUID uniqueId = CommonPlugin.getInstance().getUuidFetcher().request(playerName);
             if (uniqueId != null) {
                sender.sendMessage("§cVocê não pode usar fake de uma conta registrada na mojang, tente outro nick.");
-            } else if (CommonPlugin.getInstance().getMemberData().loadMember(playerName, true) != null) {
+            } else if (CommonPlugin.getInstance().getAccountData().loadAccount(playerName, true) != null) {
                sender.sendMessage("§cVocê não pode usar fake de uma conta já registrada no servidor, tente outro nick.");
             } else if (Bukkit.getPlayerExact(playerName) != null) {
                sender.sendMessage("§cVocê não pode usar o fake do " + playerName + ". 3");
             } else {
                if (!sender.isCustomSkin()) {
                   CommonPlugin.getInstance()
-                     .getMemberManager()
-                     .getMembers()
+                     .getAccountManager()
+                     .getAccounts()
                      .stream()
                      .filter(member -> member.hasCustomSkin() || member.getLoginConfiguration().getAccountType() == LoginConfiguration.AccountType.PREMIUM)
                      .findFirst()
@@ -557,7 +557,7 @@ public class ProfileCommand implements CommandClass {
    public List<String> tagCompleter(CommandArgs cmdArgs) {
       if (cmdArgs.isPlayer() && cmdArgs.getArgs().length == 1) {
          List<String> tagList = new ArrayList<>();
-         BukkitMember member = (BukkitMember)CommonPlugin.getInstance().getMemberManager().getMember(cmdArgs.getSender().getUniqueId());
+         BukkitAccount member = (BukkitAccount)CommonPlugin.getInstance().getAccountManager().getAccount(cmdArgs.getSender().getUniqueId());
          if (cmdArgs.getArgs()[0].isEmpty()) {
             for(Tag tag : CommonPlugin.getInstance().getPluginInfo().getTags()) {
                if (member.hasTag(tag)) {

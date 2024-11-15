@@ -24,8 +24,8 @@ public class BroadcastPacket extends Packet {
    @Override
    public void receive() {
       CommonPlugin.getInstance()
-         .getMemberManager()
-         .getMembers()
+         .getAccountManager()
+         .getAccounts()
          .stream()
          .filter(member -> this.staff ? member.hasPermission(this.permission) : member.isStaff())
          .forEach(member -> member.sendMessage(this.components));

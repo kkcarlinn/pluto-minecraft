@@ -9,13 +9,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
 import br.com.plutomc.core.common.command.CommandSender;
 import br.com.plutomc.core.common.medal.Medal;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.permission.Tag;
 import br.com.plutomc.core.common.utils.string.MessageBuilder;
 import br.com.plutomc.core.common.utils.string.StringFormat;
@@ -48,7 +48,7 @@ public class MedalCommand implements CommandClass {
                }
 
                if (sender.isPlayer()) {
-                  new ConfirmInventory(cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer(), "Confirme a ação.", bool -> {
+                  new ConfirmInventory(cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer(), "Confirme a ação.", bool -> {
                      if (bool) {
                         CommonPlugin.getInstance().getPluginInfo().getMedalMap().remove(medal.getMedalName().toLowerCase());
                         sender.sendMessage("§aMedalha deletada com sucesso.");
@@ -139,23 +139,23 @@ public class MedalCommand implements CommandClass {
                   );
                break;
             default:
-               Member member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[0]);
-               if (member == null) {
-                  member = CommonPlugin.getInstance().getMemberData().loadMember(args[0], true);
-                  if (member == null) {
+               Account account = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[0]);
+               if (account == null) {
+                  account = CommonPlugin.getInstance().getAccountData().loadAccount(args[0], true);
+                  if (account == null) {
                      sender.sendMessage(sender.getLanguage().t("account-doesnt-exist", "%player%", args[0]));
                      return;
                   }
                }
 
                if (args.length == 1) {
-                  if (member.getMedals().isEmpty()) {
-                     sender.sendMessage("§cO jogador " + member.getPlayerName() + " não possui medalhas.");
+                  if (account.getMedals().isEmpty()) {
+                     sender.sendMessage("§cO jogador " + account.getPlayerName() + " não possui medalhas.");
                   } else {
-                     sender.sendMessage("  §eMembro " + member.getPlayerName());
+                     sender.sendMessage("  §eMembro " + account.getPlayerName());
                   }
 
-                  Member m = member;
+                  Account m = account;
 
                   for(Medal medal1 : CommonPlugin.getInstance()
                      .getPluginInfo()
@@ -198,11 +198,11 @@ public class MedalCommand implements CommandClass {
                         return;
                      }
 
-                     if (member.addMedal(medal1)) {
-                        sender.sendMessage("§aVocê deu a medalha " + medal1.getChatColor() + medal1.getMedalName() + "§e para o " + member.getPlayerName() + ".");
+                     if (account.addMedal(medal1)) {
+                        sender.sendMessage("§aVocê deu a medalha " + medal1.getChatColor() + medal1.getMedalName() + "§e para o " + account.getPlayerName() + ".");
                      } else {
                         sender.sendMessage(
-                           "§cO jogador " + member.getPlayerName() + " já possui a medalha " + medal1.getChatColor() + medal1.getMedalName() + "§c."
+                           "§cO jogador " + account.getPlayerName() + " já possui a medalha " + medal1.getChatColor() + medal1.getMedalName() + "§c."
                         );
                      }
                      break;
@@ -218,11 +218,11 @@ public class MedalCommand implements CommandClass {
                         return;
                      }
 
-                     if (member.removeMedal(medal1)) {
-                        sender.sendMessage("§aVocê removeu a medalha " + medal1.getChatColor() + medal1.getMedalName() + "§a do " + member.getPlayerName() + ".");
+                     if (account.removeMedal(medal1)) {
+                        sender.sendMessage("§aVocê removeu a medalha " + medal1.getChatColor() + medal1.getMedalName() + "§a do " + account.getPlayerName() + ".");
                      } else {
                         sender.sendMessage(
-                           "§cO jogador " + member.getPlayerName() + " não possui a medalha " + medal1.getChatColor() + medal1.getMedalName() + "§c."
+                           "§cO jogador " + account.getPlayerName() + " não possui a medalha " + medal1.getChatColor() + medal1.getMedalName() + "§c."
                         );
                      }
                      break;
@@ -240,7 +240,7 @@ public class MedalCommand implements CommandClass {
       console = false
    )
    public void medalCommand(CommandArgs cmdArgs) {
-      Member sender = cmdArgs.getSenderAsMember();
+      Account sender = cmdArgs.getSenderAsMember();
       String[] args = cmdArgs.getArgs();
       if (args.length != 0) {
          String medalName = Joiner.on(' ').join(args);
@@ -299,7 +299,7 @@ public class MedalCommand implements CommandClass {
    public List<String> tagCompleter(CommandArgs cmdArgs) {
       if (cmdArgs.isPlayer() && cmdArgs.getArgs().length == 1) {
          List<String> tagList = new ArrayList<>();
-         BukkitMember member = (BukkitMember)CommonPlugin.getInstance().getMemberManager().getMember(cmdArgs.getSender().getUniqueId());
+         BukkitAccount member = (BukkitAccount)CommonPlugin.getInstance().getAccountManager().getAccount(cmdArgs.getSender().getUniqueId());
          if (cmdArgs.getArgs()[0].isEmpty()) {
             for(Tag tag : CommonPlugin.getInstance().getPluginInfo().getTags()) {
                if (member.hasTag(tag)) {

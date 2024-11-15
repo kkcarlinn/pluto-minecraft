@@ -1,7 +1,7 @@
 package br.com.plutomc.core.common.manager;
 
-import br.com.plutomc.core.common.member.party.Party;
-import br.com.plutomc.core.common.member.party.PartyRole;
+import br.com.plutomc.core.common.account.party.Party;
+import br.com.plutomc.core.common.account.party.PartyRole;
 import com.google.common.collect.ImmutableList;
 import java.util.HashMap;
 import java.util.List;

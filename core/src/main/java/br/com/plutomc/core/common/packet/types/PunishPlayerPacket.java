@@ -9,7 +9,7 @@ import br.com.plutomc.core.common.packet.PacketType;
 import br.com.plutomc.core.common.punish.Punish;
 import br.com.plutomc.core.common.punish.PunishType;
 import br.com.plutomc.core.common.utils.DateUtils;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -26,27 +26,27 @@ public class PunishPlayerPacket extends Packet {
 
    @Override
    public void receive() {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(this.playerId);
-      if (member == null) {
-         member = CommonPlugin.getInstance().getMemberData().loadMember(this.playerId);
-         if (member == null) {
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(this.playerId);
+      if (account == null) {
+         account = CommonPlugin.getInstance().getAccountData().loadAccount(this.playerId);
+         if (account == null) {
             CommonPlugin.getInstance().debug("Could not find member with UUID " + this.playerId.toString());
             return;
          }
       }
 
-      member.getPunishConfiguration().punish(this.punish);
-      member.saveConfig();
+      account.getPunishConfiguration().punish(this.punish);
+      account.saveConfig();
       ProxiedPlayer player = ProxyServer.getInstance().getPlayer(this.playerId);
       if (player != null && this.punish.getPunishType() == PunishType.BAN) {
          player.disconnect(
             PluginInfo.t(
-               member,
+                    account,
                "ban-" + (this.punish.isPermanent() ? "permanent" : "temporary") + "-kick-message",
                "%reason%",
                this.punish.getPunishReason(),
                "%expireAt%",
-               DateUtils.getTime(member.getLanguage(), this.punish.getExpireAt()),
+               DateUtils.getTime(account.getLanguage(), this.punish.getExpireAt()),
                "%punisher%",
                this.punish.getPunisherName(),
                "%website%",

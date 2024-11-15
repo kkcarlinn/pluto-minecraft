@@ -3,11 +3,11 @@ package br.com.plutomc.core.bukkit.command.register;
 import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.core.bukkit.event.member.PlayerAuthEvent;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
-import br.com.plutomc.core.common.member.configuration.LoginConfiguration;
+import br.com.plutomc.core.common.account.configuration.LoginConfiguration;
 import br.com.plutomc.core.common.server.ServerType;
 import org.bukkit.Bukkit;
 
@@ -18,7 +18,7 @@ public class LoginCommand implements CommandClass {
       console = false
    )
    public void registerCommand(CommandArgs cmdArgs) {
-      BukkitMember sender = cmdArgs.getSenderAsMember(BukkitMember.class);
+      BukkitAccount sender = cmdArgs.getSenderAsMember(BukkitAccount.class);
       String[] args = cmdArgs.getArgs();
       if (sender.getLoginConfiguration().isRegistered()) {
          sender.sendMessage("§cVocê já está registrado.");
@@ -45,7 +45,7 @@ public class LoginCommand implements CommandClass {
       console = false
    )
    public void logoutCommand(CommandArgs cmdArgs) {
-      BukkitMember sender = cmdArgs.getSenderAsMember(BukkitMember.class);
+      BukkitAccount sender = cmdArgs.getSenderAsMember(BukkitAccount.class);
       if (sender.getLoginConfiguration().getAccountType() != LoginConfiguration.AccountType.PREMIUM) {
          sender.getLoginConfiguration().logOut();
          sender.getLoginConfiguration().stopSession();
@@ -59,7 +59,7 @@ public class LoginCommand implements CommandClass {
       console = false
    )
    public void loginCommand(CommandArgs cmdArgs) {
-      BukkitMember sender = cmdArgs.getSenderAsMember(BukkitMember.class);
+      BukkitAccount sender = cmdArgs.getSenderAsMember(BukkitAccount.class);
       String[] args = cmdArgs.getArgs();
       if (!sender.getLoginConfiguration().isRegistered()) {
          sender.sendMessage("§cVocê ainda não se registrou, utilize /register para se autenticar.");

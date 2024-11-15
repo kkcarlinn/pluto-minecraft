@@ -40,10 +40,10 @@ public class CommonConst {
    public static final String FLY_PERMISSION = "command.fly";
    public static final String SERVER_INFO_CHANNEL = "server_info";
    public static final String SERVER_PACKET_CHANNEL = "server_packet";
-   public static final String MEMBER_FIELD_CHANNEL = "member_field";
+   public static final String ACCOUNT_FIELD_CHANNEL = "account_field";
    public static final String CLAN_FIELD_CHANNEL = "clan_field";
-   public static final String MEMBER_PACKET_FIELD_CHANNEL = "member_packet";
-   public static final String SERVER_MEMBERS_CHANNEL = "server_members";
+   public static final String ACCOUNT_PACKET_FIELD_CHANNEL = "account_packet";
+   public static final String SERVER_PLAYERS_CHANNEL = "server_players";
    public static final long REPORT_EXPIRE_TIME = 10800000L;
    public static final String BUNGEECORD_SERVERID = "bungeecord.plutomc.net";
    public static final String DISCORD_SERVERID = "discord.plutomc.net";

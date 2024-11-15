@@ -3,7 +3,7 @@ package br.com.plutomc.core.common.packet.types;
 import java.util.UUID;
 
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.packet.Packet;
 import br.com.plutomc.core.common.packet.PacketType;
 import net.md_5.bungee.api.ChatColor;
@@ -23,20 +23,20 @@ public class StaffchatBungeePacket extends Packet {
 
    @Override
    public void receive() {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(this.playerId);
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(this.playerId);
       String staffMessage;
-      if (member == null) {
+      if (account == null) {
          staffMessage = "§7[StaffChat] " + this.nickname + "§7: §f" + ChatColor.translateAlternateColorCodes('&', this.message);
       } else {
          staffMessage = "§3*§7[StaffChat] "
-            + CommonPlugin.getInstance().getPluginInfo().getTagByGroup(member.getServerGroup()).getStrippedColor()
+            + CommonPlugin.getInstance().getPluginInfo().getTagByGroup(account.getServerGroup()).getStrippedColor()
             + " "
-            + member.getPlayerName()
+            + account.getPlayerName()
             + "§7: §f"
             + ChatColor.translateAlternateColorCodes('&', this.message);
       }
 
-      CommonPlugin.getInstance().getMemberManager().getMembers().stream().filter(Member::isStaff).forEach(m -> m.sendMessage(staffMessage));
+      CommonPlugin.getInstance().getAccountManager().getAccounts().stream().filter(Account::isStaff).forEach(m -> m.sendMessage(staffMessage));
    }
 
    public UUID getPlayerId() {

@@ -9,16 +9,16 @@ import br.com.plutomc.core.bukkit.menu.LanguageInventory;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.utils.DateUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class ProfileInventory {
    public ProfileInventory(Player player) {
-      final Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-      MenuInventory menuInventory = new MenuInventory(member.getLanguage().t("inventory-profile", "%player%", member.getPlayerName()), 5);
-      this.updateProfileItem(menuInventory, member);
+      final Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+      MenuInventory menuInventory = new MenuInventory(account.getLanguage().t("inventory-profile", "%player%", account.getPlayerName()), 5);
+      this.updateProfileItem(menuInventory, account);
       menuInventory.setItem(
          29,
          new ItemBuilder().name("§a§%inventory-profile-your-stats%§").lore("§7§%inventory-profile-your-stats-description%§").type(Material.PAPER).build(),
@@ -64,48 +64,48 @@ public class ProfileInventory {
          @Override
          public void onUpdate(Player player, MenuInventory menu) {
             if (menu.hasItem(13)) {
-               ProfileInventory.this.updateProfileItem(menu, member);
+               ProfileInventory.this.updateProfileItem(menu, account);
             }
          }
       });
       menuInventory.open(player);
    }
 
-   private void updateProfileItem(MenuInventory menuInventory, Member member) {
-      Language language = member.getLanguage();
-      if (member.isOnline()) {
+   private void updateProfileItem(MenuInventory menuInventory, Account account) {
+      Language language = account.getLanguage();
+      if (account.isOnline()) {
          menuInventory.setItem(
             13,
             new ItemBuilder()
-               .name("§a" + member.getPlayerName())
+               .name("§a" + account.getPlayerName())
                .type(Material.SKULL_ITEM)
                .lore(
                   "",
-                  "§7§%inventory-profile-first-login%§: §f" + CommonConst.DATE_FORMAT.format(new Date(member.getFirstLogin())),
-                  "§7§%inventory-profile-last-login%§: §f" + CommonConst.DATE_FORMAT.format(new Date(member.getLastLogin())),
-                  "§7§%inventory-profile-total-logged-time%§: §f" + DateUtils.formatDifference(language, member.getOnlineTime() / 1000L),
-                  "§7§%inventory-profile-actual-logged-time%§: §f" + DateUtils.formatDifference(language, member.getSessionTime() / 1000L),
+                  "§7§%inventory-profile-first-login%§: §f" + CommonConst.DATE_FORMAT.format(new Date(account.getFirstLogin())),
+                  "§7§%inventory-profile-last-login%§: §f" + CommonConst.DATE_FORMAT.format(new Date(account.getLastLogin())),
+                  "§7§%inventory-profile-total-logged-time%§: §f" + DateUtils.formatDifference(language, account.getOnlineTime() / 1000L),
+                  "§7§%inventory-profile-actual-logged-time%§: §f" + DateUtils.formatDifference(language, account.getSessionTime() / 1000L),
                   "",
                   "§a§%inventory-profile-user-online%§"
                )
                .durability(3)
-               .skin(member.getPlayerName())
+               .skin(account.getPlayerName())
                .build()
          );
       } else {
          menuInventory.setItem(
             13,
             new ItemBuilder()
-               .name("§a" + member.getPlayerName())
+               .name("§a" + account.getPlayerName())
                .type(Material.SKULL_ITEM)
                .lore(
                   "",
-                  "§7§%inventory-profile-first-login%§: §f" + CommonConst.DATE_FORMAT.format(new Date(member.getFirstLogin())),
-                  "§7§%inventory-profile-last-login%§: §f" + CommonConst.DATE_FORMAT.format(new Date(member.getLastLogin())),
-                  "§7§%inventory-profile-total-logged-time%§: §f" + DateUtils.formatDifference(language, member.getOnlineTime() / 1000L)
+                  "§7§%inventory-profile-first-login%§: §f" + CommonConst.DATE_FORMAT.format(new Date(account.getFirstLogin())),
+                  "§7§%inventory-profile-last-login%§: §f" + CommonConst.DATE_FORMAT.format(new Date(account.getLastLogin())),
+                  "§7§%inventory-profile-total-logged-time%§: §f" + DateUtils.formatDifference(language, account.getOnlineTime() / 1000L)
                )
                .durability(3)
-               .skin(member.getPlayerName())
+               .skin(account.getPlayerName())
                .build()
          );
       }

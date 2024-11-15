@@ -6,7 +6,7 @@ import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.lobby.lobbyhost.LobbyHost;
 import br.com.plutomc.lobby.lobbyhost.LobbyConst;
 import br.com.plutomc.core.bukkit.utils.player.PlayerHelper;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.server.ServerType;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -30,11 +30,11 @@ public class PlayerListener implements Listener {
    public void onPlayerLogin(PlayerLoginEvent event) {
       if (event.getResult() == Result.ALLOWED) {
          Player player = event.getPlayer();
-         Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-         if (member == null) {
+         Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+         if (account == null) {
             event.disallow(Result.KICK_OTHER, "§cNão foi possível carregar sua conta, tente novamente.");
          } else {
-            LobbyHost.getInstance().getGamerManager().loadGamer(member.getUniqueId(), new Gamer(member));
+            LobbyHost.getInstance().getGamerManager().loadGamer(account.getUniqueId(), new Gamer(account));
          }
       }
    }
@@ -42,7 +42,7 @@ public class PlayerListener implements Listener {
    @EventHandler
    public void onPlayerJoin(PlayerJoinEvent event) {
       Player player = event.getPlayer();
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
       player.teleport(BukkitCommon.getInstance().getLocationManager().getLocation("spawn"));
       player.setGameMode(GameMode.ADVENTURE);
       if (player.hasPermission("command.fly")) {
@@ -61,7 +61,7 @@ public class PlayerListener implements Listener {
       player.setLevel(0);
       player.setTotalExperience(0);
       LobbyHost.getInstance().getPlayerInventory().handle(event.getPlayer());
-      if (CommonPlugin.getInstance().getServerType() == ServerType.LOBBY && member.getSessionTime() <= 10000L) {
+      if (CommonPlugin.getInstance().getServerType() == ServerType.LOBBY && account.getSessionTime() <= 10000L) {
          PlayerHelper.title(player, "§b§lPLUTO", "§eSeja bem-vindo!");
       }
 

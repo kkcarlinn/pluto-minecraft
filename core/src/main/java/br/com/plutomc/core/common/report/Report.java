@@ -6,7 +6,7 @@ import java.util.UUID;
 import java.util.Map.Entry;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.command.CommandSender;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 
 public class Report {
    private final UUID reportId;
@@ -16,7 +16,7 @@ public class Report {
    private long createdAt;
    private boolean online;
 
-   public Report(Member reported, CommandSender reporter, String reason, boolean online) {
+   public Report(Account reported, CommandSender reporter, String reason, boolean online) {
       this.reportId = reported.getUniqueId();
       this.playerName = reported.getName();
       this.reportMap = new HashMap<>();
@@ -28,19 +28,19 @@ public class Report {
 
    public void setOnline(boolean online) {
       this.online = online;
-      CommonPlugin.getInstance().getMemberData().updateReport(this, "online");
+      CommonPlugin.getInstance().getAccountData().updateReport(this, "online");
    }
 
    public void addReport(CommandSender reporter, String reason) {
       this.reportMap.put(reporter.getUniqueId(), new ReportInfo(reporter.getName(), reason));
       this.lastReport = reporter.getUniqueId();
-      CommonPlugin.getInstance().getMemberData().updateReport(this, "reportMap");
-      CommonPlugin.getInstance().getMemberData().updateReport(this, "lastReport");
+      CommonPlugin.getInstance().getAccountData().updateReport(this, "reportMap");
+      CommonPlugin.getInstance().getAccountData().updateReport(this, "lastReport");
    }
 
    public void deleteReport() {
       CommonPlugin.getInstance().getReportManager().deleteReport(this.reportId);
-      CommonPlugin.getInstance().getMemberData().deleteReport(this.reportId);
+      CommonPlugin.getInstance().getAccountData().deleteReport(this.reportId);
    }
 
    public ReportInfo getLastReport() {
@@ -57,10 +57,10 @@ public class Report {
 
    public void notifyPunish() {
       for(Entry<UUID, ReportInfo> entry : this.getReportMap().entrySet()) {
-         Member member = CommonPlugin.getInstance().getMemberManager().getMember(entry.getKey());
-         if (member != null) {
-            member.sendMessage("§aUm jogador que você denunciou recentemente foi banido.");
-            member.sendMessage("§aObrigado por ajudar nossa comunidade!");
+         Account account = CommonPlugin.getInstance().getAccountManager().getAccount(entry.getKey());
+         if (account != null) {
+            account.sendMessage("§aUm jogador que você denunciou recentemente foi banido.");
+            account.sendMessage("§aObrigado por ajudar nossa comunidade!");
          }
       }
 

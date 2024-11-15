@@ -33,7 +33,7 @@ public class LobbyMain extends LobbyHost {
       this.createCharacter("npc-duels", "stopeey", new ActionHandler() {
          @Override
          public boolean onInteract(Player player, boolean right) {
-            LobbyMain.this.sendPlayerToServer(player, new ServerType[]{ServerType.DUELS_LOBBY, ServerType.DUELS_GAPPLE});
+            //LobbyMain.this.sendPlayerToServer(player, new ServerType[]{ServerType.DUELS_LOBBY, ServerType.DUELS_GAPPLE});
             return false;
          }
       }, Arrays.asList(ServerType.DUELS_LOBBY), new String[]{"§bDuels"});

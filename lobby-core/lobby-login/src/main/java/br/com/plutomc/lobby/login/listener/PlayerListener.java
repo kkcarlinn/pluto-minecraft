@@ -15,8 +15,8 @@ import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.core.bukkit.event.UpdateEvent;
 import br.com.plutomc.core.bukkit.event.member.PlayerAuthEvent;
 import br.com.plutomc.lobby.login.event.CaptchaSuccessEvent;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.configuration.LoginConfiguration;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.configuration.LoginConfiguration;
 import br.com.plutomc.core.common.server.ServerType;
 import br.com.plutomc.core.common.utils.Callback;
 import org.bukkit.Bukkit;
@@ -42,20 +42,20 @@ public class PlayerListener implements Listener {
       if (event.getType() == UpdateEvent.UpdateType.SECOND) {
          for(Entry<UUID, Long> next : ImmutableSet.copyOf(this.timeMap.entrySet())) {
             Player player = Bukkit.getPlayer(next.getKey());
-            Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-            boolean needCaptcha = this.needCaptcha(member);
+            Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+            boolean needCaptcha = this.needCaptcha(account);
             if (next.getValue() > System.currentTimeMillis()) {
                if (!needCaptcha) {
                   int time = (int)(next.getValue() - System.currentTimeMillis()) / 1000 + 1;
                   if (time % 10 == 0) {
-                     member.sendMessage(
-                        member.getLoginConfiguration().isRegistered()
+                     account.sendMessage(
+                        account.getLoginConfiguration().isRegistered()
                            ? "§aVocê precisa se autenticar usando o /login <sua senha>§f."
                            : "§aVocê precisa se autenticar usando o /register <sua senha> <repita sua senha>§f."
                      );
                   }
 
-                  member.sendActionBar("§c" + time + " segundos restantes.");
+                  account.sendActionBar("§c" + time + " segundos restantes.");
                }
             } else {
                if (needCaptcha) {
@@ -84,13 +84,13 @@ public class PlayerListener implements Listener {
    )
    public void onPlayerJoin(PlayerJoinEvent event) {
       Player player = event.getPlayer();
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-      if (member.getLoginConfiguration().getAccountType() == LoginConfiguration.AccountType.PREMIUM) {
-         if (!member.hasPermission("staff.super")) {
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+      if (account.getLoginConfiguration().getAccountType() == LoginConfiguration.AccountType.PREMIUM) {
+         if (!account.hasPermission("staff.super")) {
             BukkitCommon.getInstance().sendPlayerToServer(event.getPlayer(), true, ServerType.LOBBY);
          }
       } else {
-         boolean captcha = this.needCaptcha(member);
+         boolean captcha = this.needCaptcha(account);
          this.loadTime(player);
          if (captcha) {
             player.sendMessage("§aComplete o captcha para ter o acesso liberado.");
@@ -114,9 +114,9 @@ public class PlayerListener implements Listener {
 
    private void captcha(final Player player, Captcha orElse, final int i) {
       if (this.captchaList.size() == i) {
-         Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-         CommonPlugin.getInstance().debug("The ip " + member.getIpAddress() + " pass in the captcha.");
-         member.getLoginConfiguration().setCaptcha(true);
+         Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+         CommonPlugin.getInstance().debug("The ip " + account.getIpAddress() + " pass in the captcha.");
+         account.getLoginConfiguration().setCaptcha(true);
          this.loadTime(player);
          Bukkit.getPluginManager().callEvent(new CaptchaSuccessEvent(player));
       } else {
@@ -138,8 +138,8 @@ public class PlayerListener implements Listener {
       }
    }
 
-   public boolean needCaptcha(Member member) {
-      return !member.getLoginConfiguration().isCaptcha() && member.getLoginConfiguration().getAccountType() != LoginConfiguration.AccountType.PREMIUM;
+   public boolean needCaptcha(Account account) {
+      return !account.getLoginConfiguration().isCaptcha() && account.getLoginConfiguration().getAccountType() != LoginConfiguration.AccountType.PREMIUM;
    }
 
    public void loadTime(Player player) {
@@ -147,10 +147,10 @@ public class PlayerListener implements Listener {
    }
 
    public void deletePlayer(Player player) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-      CommonPlugin.getInstance().debug("The ip " + member.getIpAddress() + " was kicked from captcha failure.");
-      if (member.getOnlineTime() <= 600000L) {
-         CommonPlugin.getInstance().getPluginPlatform().runAsync(() -> CommonPlugin.getInstance().getMemberData().deleteMember(player.getUniqueId()));
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+      CommonPlugin.getInstance().debug("The ip " + account.getIpAddress() + " was kicked from captcha failure.");
+      if (account.getOnlineTime() <= 600000L) {
+         CommonPlugin.getInstance().getPluginPlatform().runAsync(() -> CommonPlugin.getInstance().getAccountData().deleteMember(player.getUniqueId()));
       }
    }
 }

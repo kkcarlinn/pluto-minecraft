@@ -8,10 +8,10 @@ import br.com.plutomc.core.bukkit.event.server.PlayerChangeEvent;
 import br.com.plutomc.core.bukkit.utils.scoreboard.ScoreHelper;
 import br.com.plutomc.core.bukkit.utils.scoreboard.Scoreboard;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.status.Status;
-import br.com.plutomc.core.common.member.status.StatusType;
-import br.com.plutomc.core.common.member.status.types.BedwarsCategory;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.status.Status;
+import br.com.plutomc.core.common.account.status.StatusType;
+import br.com.plutomc.core.common.account.status.types.BedwarsCategory;
 import br.com.plutomc.core.common.permission.Tag;
 import br.com.plutomc.core.common.server.ServerType;
 import br.com.plutomc.core.common.utils.string.WaveAnimation;
@@ -72,7 +72,7 @@ public class ScoreboardListener implements Listener {
     }
 
     private void handleScoreboard(Player player) {
-        Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+        Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
         Status status = CommonPlugin.getInstance().getStatusManager().loadStatus(player.getUniqueId(), StatusType.BEDWARS);
 
         Scoreboard scoreboard = new Scoreboard(player, "§b§lBEDWARS");
@@ -94,8 +94,8 @@ public class ScoreboardListener implements Listener {
     }
 
     private void updateScoreboard(Player player) {
-        Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-        Tag tag = CommonPlugin.getInstance().getPluginInfo().getTagByGroup(member.getServerGroup());
+        Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+        Tag tag = CommonPlugin.getInstance().getPluginInfo().getTagByGroup(account.getServerGroup());
     }
 
     private void updatePlayers() {

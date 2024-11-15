@@ -1,7 +1,6 @@
 package br.com.plutomc.core.bungee;
 
-import br.com.plutomc.core.bungee.member.BungeeParty;
-import br.com.plutomc.core.common.docker.DemandDockerServer;
+import br.com.plutomc.core.bungee.account.BungeeParty;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import java.io.File;
@@ -74,7 +73,7 @@ public class BungeeMain extends Plugin {
       this.plugin.setServerId("bungeecord.plutomc.com.br");
       this.plugin.getServerData().startServer(3000);
       this.plugin.getServerData().setJoinEnabled(!this.whitelistEnabled);
-      this.plugin.getMemberData().reloadPlugins();
+      this.plugin.getAccountData().reloadPlugins();
       this.plugin.setPartyClass(BungeeParty.class);
       this.plugin.getReportManager().getReports().stream().forEach(report -> report.setOnline(false));
       new BungeeCommandFramework(this).loadCommands("br.com.plutomc");
@@ -92,7 +91,6 @@ public class BungeeMain extends Plugin {
          }
       }, 2L, 2L, TimeUnit.MINUTES);
 
-      new DemandDockerServer().startServer("lobby", 25566, "1");
       super.onEnable();
    }
 
@@ -139,7 +137,6 @@ public class BungeeMain extends Plugin {
 
    public void onDisable() {
       this.plugin.getServerData().stopServer();
-      new DemandDockerServer().stopServer("lobby");
       super.onDisable();
    }
 

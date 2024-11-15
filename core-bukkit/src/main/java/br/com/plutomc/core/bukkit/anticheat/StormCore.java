@@ -6,10 +6,10 @@ import br.com.plutomc.core.bukkit.anticheat.hack.verify.*;
 import br.com.plutomc.core.bukkit.anticheat.listener.PlayerListener;
 import br.com.plutomc.core.bukkit.anticheat.utils.ForcefieldManager;
 import br.com.plutomc.core.bukkit.event.UpdateEvent;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.packet.types.PunishPlayerPacket;
 import br.com.plutomc.core.common.punish.Punish;
 import br.com.plutomc.core.common.punish.PunishType;
@@ -62,14 +62,14 @@ public class StormCore {
                               Player player = Bukkit.getPlayer(entry.getKey());
                               if (player == null) {
                                  CommonPlugin.getInstance()
-                                    .getMemberManager()
-                                    .getMembers()
+                                    .getAccountManager()
+                                    .getAccounts()
                                     .stream()
-                                    .filter(m -> m.isStaff() && m.getMemberConfiguration().isSeeingLogs())
+                                    .filter(m -> m.isStaff() && m.getAccountConfiguration().isSeeingLogs())
                                     .forEach(m -> m.sendMessage("§cO jogador " + entry.getKey() + " foi desconectado antes de ser banido!"));
                                  StormCore.this.banPlayerMap.remove(entry.getKey());
                               } else {
-                                 BukkitMember member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId(), BukkitMember.class);
+                                 BukkitAccount member = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId(), BukkitAccount.class);
                                  if (member != null) {
                                     int seconds = (int)((entry.getValue() - System.currentTimeMillis()) / 1000L);
                                     HackType hackType = member.getUserData()
@@ -85,10 +85,10 @@ public class StormCore {
                                     } else {
                                        if (seconds <= 30 && seconds % 10 == 0 || seconds % 15 == 0) {
                                           CommonPlugin.getInstance()
-                                             .getMemberManager()
-                                             .getMembers()
+                                             .getAccountManager()
+                                             .getAccounts()
                                              .stream()
-                                             .filter(m -> m.isStaff() && m.getMemberConfiguration().isSeeingLogs())
+                                             .filter(m -> m.isStaff() && m.getAccountConfiguration().isSeeingLogs())
                                              .forEach(
                                                 m -> m.sendMessage(
                                                       "§cO jogador "
@@ -109,18 +109,18 @@ public class StormCore {
                   }
                }
       
-               private void banPlayer(Player player, Member member, HackType hackType) {
+               private void banPlayer(Player player, Account account, HackType hackType) {
                   Punish punish = null;
                   if (hackType.isPermanent()) {
-                     punish = new Punish(member, CommonConst.CONSOLE_ID, "STORM", "Uso de " + StringFormat.formatString(hackType.name()), -1L, PunishType.BAN);
+                     punish = new Punish(account, CommonConst.CONSOLE_ID, "STORM", "Uso de " + StringFormat.formatString(hackType.name()), -1L, PunishType.BAN);
                   } else {
                      punish = new Punish(
-                        member,
+                             account,
                         CommonConst.CONSOLE_ID,
                         "STORM",
                         "Uso de " + StringFormat.formatString(hackType.name()),
                         System.currentTimeMillis()
-                           + (member.getPunishConfiguration().getPunish(PunishType.BAN).stream().filter(p -> p.getPunisherName().equals("STORM")).count() + 1L)
+                           + (account.getPunishConfiguration().getPunish(PunishType.BAN).stream().filter(p -> p.getPunisherName().equals("STORM")).count() + 1L)
                               * 21600000L,
                         PunishType.BAN
                      );

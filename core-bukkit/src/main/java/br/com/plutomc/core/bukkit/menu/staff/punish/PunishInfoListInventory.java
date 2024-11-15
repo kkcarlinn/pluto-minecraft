@@ -10,7 +10,7 @@ import br.com.plutomc.core.bukkit.utils.menu.MenuItem;
 import br.com.plutomc.core.bukkit.utils.menu.click.ClickType;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.punish.Punish;
 import br.com.plutomc.core.common.punish.PunishType;
 import br.com.plutomc.core.common.utils.DateUtils;
@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 
 public class PunishInfoListInventory extends MenuInventory {
    private Player player;
-   private Member target;
+   private Account target;
    private PunishType punishType;
    private int page;
    private PunishOrdenator ordenator = PunishOrdenator.ALPHABETIC;
@@ -27,7 +27,7 @@ public class PunishInfoListInventory extends MenuInventory {
    private long wait;
    private MenuInventory backInventory;
 
-   public PunishInfoListInventory(Player player, Member target, PunishType punishType, int page, MenuInventory backInventory) {
+   public PunishInfoListInventory(Player player, Account target, PunishType punishType, int page, MenuInventory backInventory) {
       super("§7Listando " + punishType.name().toLowerCase() + "s", 5);
       this.player = player;
       this.target = target;

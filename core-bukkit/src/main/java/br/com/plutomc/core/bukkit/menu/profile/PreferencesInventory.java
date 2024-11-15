@@ -4,7 +4,7 @@ import br.com.plutomc.core.bukkit.utils.item.ItemBuilder;
 import br.com.plutomc.core.bukkit.utils.menu.MenuInventory;
 import br.com.plutomc.core.bukkit.utils.menu.click.MenuClickHandler;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -13,23 +13,23 @@ public class PreferencesInventory {
 
    public PreferencesInventory(Player player, int page, long wait) {
       MenuInventory menuInventory = new MenuInventory("§7§%inventory-preferences%§", 4);
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
       this.create(
          player,
          "Bate-papo",
          "Receber mensagens no bate-papo do servidor",
          Material.PAPER,
-         member.getMemberConfiguration().isSeeingChat(),
+         account.getAccountConfiguration().isSeeingChat(),
          11,
          menuInventory,
          (p, inv, type, stack, s) -> {
             if (wait > System.currentTimeMillis()) {
                if (!this.message) {
                   this.message = true;
-                  member.sendMessage("§cVocê precisa esperar para mudar uma configuração.");
+                  account.sendMessage("§cVocê precisa esperar para mudar uma configuração.");
                }
             } else {
-               member.getMemberConfiguration().setSeeingChat(!member.getMemberConfiguration().isSeeingChat());
+               account.getAccountConfiguration().setSeeingChat(!account.getAccountConfiguration().isSeeingChat());
                new PreferencesInventory(player, page, System.currentTimeMillis() + 500L);
             }
          }
@@ -39,17 +39,17 @@ public class PreferencesInventory {
          "Conversa privada",
          "Receber mensagens privadas no servidor",
          Material.PAPER,
-         member.getMemberConfiguration().isTellEnabled(),
+         account.getAccountConfiguration().isTellEnabled(),
          12,
          menuInventory,
          (p, inv, type, stack, s) -> {
             if (wait > System.currentTimeMillis()) {
                if (!this.message) {
                   this.message = true;
-                  member.sendMessage("§cVocê precisa esperar para mudar uma configuração.");
+                  account.sendMessage("§cVocê precisa esperar para mudar uma configuração.");
                }
             } else {
-               member.getMemberConfiguration().setTellEnabled(!member.getMemberConfiguration().isTellEnabled());
+               account.getAccountConfiguration().setTellEnabled(!account.getAccountConfiguration().isTellEnabled());
                new PreferencesInventory(player, page, System.currentTimeMillis() + 500L);
             }
          }
@@ -59,17 +59,17 @@ public class PreferencesInventory {
          "Convite de party",
          "Receber convites para party",
          Material.PAPER,
-         member.getMemberConfiguration().isPartyInvites(),
+         account.getAccountConfiguration().isPartyInvites(),
          13,
          menuInventory,
          (p, inv, type, stack, s) -> {
             if (wait > System.currentTimeMillis()) {
                if (!this.message) {
                   this.message = true;
-                  member.sendMessage("§cVocê precisa esperar para mudar uma configuração.");
+                  account.sendMessage("§cVocê precisa esperar para mudar uma configuração.");
                }
             } else {
-               member.getMemberConfiguration().setPartyInvites(!member.getMemberConfiguration().isPartyInvites());
+               account.getAccountConfiguration().setPartyInvites(!account.getAccountConfiguration().isPartyInvites());
                new PreferencesInventory(player, page, System.currentTimeMillis() + 500L);
             }
          }

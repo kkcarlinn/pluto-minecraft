@@ -20,7 +20,7 @@ public class ServerDetailsInventory extends MenuInventory {
             p.closeInventory();
             BukkitCommon.getInstance()
                .getChatManager()
-               .loadChat(CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId()), new ChatManager.Callback() {
+               .loadChat(CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId()), new ChatManager.Callback() {
                   @Override
                   public void callback(boolean cancel, String... asks) {
                      if (cancel) {

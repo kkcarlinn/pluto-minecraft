@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.permission.Group;
 import br.com.plutomc.core.common.utils.string.StringFormat;
 import org.bukkit.Bukkit;
@@ -34,7 +34,7 @@ public class VanishManager {
          if (playerAdminEvent.isCancelled()) {
             return false;
          } else {
-            if (CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId()).getMemberConfiguration().isAdminRemoveItems()) {
+            if (CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId()).getAccountConfiguration().isAdminRemoveItems()) {
                ItemStack[] contents = new ItemStack[player.getInventory().getContents().length + 4];
 
                for(int i = 0; i < player.getInventory().getContents().length; ++i) {
@@ -115,9 +115,9 @@ public class VanishManager {
 
       for(Player online : Bukkit.getOnlinePlayers()) {
          if (!online.getUniqueId().equals(player.getUniqueId())) {
-            Member onlineP = CommonPlugin.getInstance().getMemberManager().getMember(online.getUniqueId());
+            Account onlineP = CommonPlugin.getInstance().getAccountManager().getAccount(online.getUniqueId());
             if (onlineP != null) {
-               if (group != null && (onlineP.getServerGroup().getId() <= group.getId() || !onlineP.getMemberConfiguration().isSpectatorsEnabled())) {
+               if (group != null && (onlineP.getServerGroup().getId() <= group.getId() || !onlineP.getAccountConfiguration().isSpectatorsEnabled())) {
                   PlayerHideToPlayerEvent event = new PlayerHideToPlayerEvent(player, online);
                   Bukkit.getPluginManager().callEvent(event);
                   if (event.isCancelled()) {
@@ -146,12 +146,12 @@ public class VanishManager {
    }
 
    public void updateVanishToPlayer(Player player) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
 
       for(Player online : Bukkit.getOnlinePlayers()) {
          if (!online.getUniqueId().equals(player.getUniqueId())) {
             Group group = this.vanishMap.get(online.getUniqueId());
-            if (group != null && (member.getServerGroup().getId() <= group.getId() || !member.getMemberConfiguration().isSpectatorsEnabled())) {
+            if (group != null && (account.getServerGroup().getId() <= group.getId() || !account.getAccountConfiguration().isSpectatorsEnabled())) {
                PlayerHideToPlayerEvent event = new PlayerHideToPlayerEvent(online, player);
                Bukkit.getPluginManager().callEvent(event);
                if (event.isCancelled()) {
@@ -177,8 +177,8 @@ public class VanishManager {
    }
 
    public Group hidePlayer(Player player) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-      Group serverGroup = member.getServerGroup();
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+      Group serverGroup = account.getServerGroup();
       Group group = serverGroup.getId() - 1 >= 0
          ? CommonPlugin.getInstance()
             .getPluginInfo()

@@ -4,7 +4,7 @@ import br.com.plutomc.core.common.backend.data.impl.DiscordDataImpl;
 import br.com.plutomc.core.common.backend.data.impl.ServerDataImpl;
 import br.com.plutomc.core.common.backend.mongodb.MongoConnection;
 import br.com.plutomc.core.common.backend.redis.RedisConnection;
-import br.com.plutomc.core.common.member.party.Party;
+import br.com.plutomc.core.common.account.party.Party;
 import br.com.plutomc.core.common.permission.Group;
 import br.com.plutomc.core.common.server.ServerManager;
 import br.com.plutomc.core.common.server.ServerType;
@@ -28,15 +28,15 @@ import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import br.com.plutomc.core.common.backend.data.DiscordData;
-import br.com.plutomc.core.common.backend.data.MemberData;
+import br.com.plutomc.core.common.backend.data.AccountData;
 import br.com.plutomc.core.common.backend.data.PartyData;
 import br.com.plutomc.core.common.backend.data.ServerData;
 import br.com.plutomc.core.common.backend.data.SkinData;
-import br.com.plutomc.core.common.backend.data.impl.MemberDataImpl;
+import br.com.plutomc.core.common.backend.data.impl.AccountDataImpl;
 import br.com.plutomc.core.common.backend.data.impl.PartyDataImpl;
 import br.com.plutomc.core.common.backend.data.impl.SkinDataImpl;
 import br.com.plutomc.core.common.manager.ConfigurationManager;
-import br.com.plutomc.core.common.manager.MemberManager;
+import br.com.plutomc.core.common.manager.AccountManager;
 import br.com.plutomc.core.common.manager.PartyManager;
 import br.com.plutomc.core.common.manager.ReportManager;
 import br.com.plutomc.core.common.manager.StatusManager;
@@ -50,12 +50,12 @@ public class CommonPlugin {
    private PluginInfo pluginInfo;
    private FileCreator fileCreator;
    private ConfigurationManager configurationManager = new ConfigurationManager();
-   private MemberManager memberManager = new MemberManager();
+   private AccountManager accountManager = new AccountManager();
    private PartyManager partyManager = new PartyManager();
    private StatusManager statusManager = new StatusManager();
    private ReportManager reportManager = new ReportManager();
    private DiscordData discordData;
-   private MemberData memberData;
+   private AccountData accountData;
    private PartyData partyData;
    private ServerData serverData;
    private SkinData skinData;
@@ -90,7 +90,7 @@ public class CommonPlugin {
          this.mongoConnection.connect();
          this.redisConnection.connect();
          this.setDiscordData(new DiscordDataImpl(this.redisConnection));
-         this.setMemberData(new MemberDataImpl(this.mongoConnection, this.redisConnection));
+         this.setAccountData(new AccountDataImpl(this.mongoConnection, this.redisConnection));
          this.setPartyData(new PartyDataImpl(this.mongoConnection));
          this.setServerData(new ServerDataImpl(this.redisConnection));
          this.setSkinData(new SkinDataImpl(this.redisConnection));
@@ -212,7 +212,7 @@ public class CommonPlugin {
          players += server.getTotalNumber();
       }
 
-      serverManager.setTotalMembers(players);
+      serverManager.setTotalPlayers(players);
    }
 
    public UUID getUniqueId(String name) {
@@ -220,7 +220,7 @@ public class CommonPlugin {
    }
 
    public UUID getUniqueId(String name, boolean cracked) {
-      UUID uniqueId = this.getMemberData().getUniqueId(name);
+      UUID uniqueId = this.getAccountData().getUniqueId(name);
       if (uniqueId != null) {
          return uniqueId;
       } else {
@@ -312,8 +312,8 @@ public class CommonPlugin {
       return this.configurationManager;
    }
 
-   public MemberManager getMemberManager() {
-      return this.memberManager;
+   public AccountManager getAccountManager() {
+      return this.accountManager;
    }
 
    public PartyManager getPartyManager() {
@@ -332,8 +332,8 @@ public class CommonPlugin {
       return this.discordData;
    }
 
-   public MemberData getMemberData() {
-      return this.memberData;
+   public AccountData getAccountData() {
+      return this.accountData;
    }
 
    public PartyData getPartyData() {
@@ -408,8 +408,8 @@ public class CommonPlugin {
       this.configurationManager = configurationManager;
    }
 
-   public void setMemberManager(MemberManager memberManager) {
-      this.memberManager = memberManager;
+   public void setAccountManager(AccountManager accountManager) {
+      this.accountManager = accountManager;
    }
 
    public void setPartyManager(PartyManager partyManager) {
@@ -428,8 +428,8 @@ public class CommonPlugin {
       this.discordData = discordData;
    }
 
-   public void setMemberData(MemberData memberData) {
-      this.memberData = memberData;
+   public void setAccountData(AccountData accountData) {
+      this.accountData = accountData;
    }
 
    public void setPartyData(PartyData partyData) {

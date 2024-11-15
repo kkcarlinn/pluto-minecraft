@@ -11,7 +11,7 @@ import br.com.plutomc.core.bukkit.utils.menu.MenuItem;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.permission.Group;
 import br.com.plutomc.core.common.permission.GroupInfo;
 import br.com.plutomc.core.common.utils.DateUtils;
@@ -24,11 +24,11 @@ public class MemberGroupListInventory {
    private List<MenuItem> items;
    private int page = 1;
 
-   public MemberGroupListInventory(Player player, Group group, List<Member> memberList) {
+   public MemberGroupListInventory(Player player, Group group, List<Account> accountList) {
       this.player = player;
       this.group = group;
       boolean skipMember = group != CommonPlugin.getInstance().getPluginInfo().getDefaultGroup();
-      this.items = memberList.stream()
+      this.items = accountList.stream()
          .sorted((o1, o2) -> o1.getPlayerName().compareTo(o2.getPlayerName()))
          .map(
             member -> {

@@ -34,7 +34,7 @@ import br.com.plutomc.core.bukkit.utils.worldedit.schematic.DataException;
 import br.com.plutomc.core.bukkit.utils.worldedit.schematic.Schematic;
 import br.com.plutomc.core.common.language.Language;
 import br.com.plutomc.core.common.medal.Medal;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.server.ServerType;
 import br.com.plutomc.core.common.server.loadbalancer.server.MinigameState;
 import br.com.plutomc.core.common.utils.configuration.Configuration;
@@ -391,8 +391,8 @@ public class GameMain extends ArcadeCommon implements Listener {
 
    public String createMessage(Player player, String message, Island island, boolean global, boolean globaPrefix, int level) {
       String levelFormatted = this.getColorByLevelPlusBrackets(level);
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-      Medal medal = member.getMedal();
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+      Medal medal = account.getMedal();
       return ((globaPrefix ? (global ? "§6[G] " : "") : "")
             + island.getIslandColor().getColor()
             + "[§%"
@@ -401,7 +401,7 @@ public class GameMain extends ArcadeCommon implements Listener {
             + levelFormatted
             + " "
             + (medal == null ? "" : medal.getChatColor() + medal.getSymbol() + " ")
-            + member.getTag().getRealPrefix()
+            + account.getTag().getRealPrefix()
             + player.getName()
             + " §7» §f"
             + message)

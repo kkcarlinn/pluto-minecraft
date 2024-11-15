@@ -11,7 +11,7 @@ import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -45,14 +45,14 @@ public class BungeeCommandFramework implements CommandFramework {
             Command command = entry.getKey().getAnnotation(Command.class);
             if (sender instanceof ProxiedPlayer) {
                ProxiedPlayer p = (ProxiedPlayer)sender;
-               Member member = CommonPlugin.getInstance().getMemberManager().getMember(p.getUniqueId());
-               if (member == null) {
+               Account account = CommonPlugin.getInstance().getAccountManager().getAccount(p.getUniqueId());
+               if (account == null) {
                   p.disconnect(TextComponent.fromLegacyText("ERRO"));
                   return true;
                }
 
-               if (!command.permission().isEmpty() && !member.hasPermission(command.permission())) {
-                  member.sendMessage(member.getLanguage().t("no-permission"));
+               if (!command.permission().isEmpty() && !account.hasPermission(command.permission())) {
+                  account.sendMessage(account.getLanguage().t("no-permission"));
                   return true;
                }
             } else if (!command.console()) {

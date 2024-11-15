@@ -249,7 +249,7 @@ public class ServerDataImpl implements ServerData {
    }
 
    @Override
-   public void setTotalMembers(int totalMembers) {
+   public void setTotalPlayers(int totalMembers) {
       try (Jedis jedis = this.redisDatabase.getPool().getResource()) {
          Pipeline pipe = jedis.pipelined();
          pipe.publish("server_members", CommonConst.GSON.toJson((JsonElement)new JsonBuilder().addProperty("totalMembers", totalMembers).build()));

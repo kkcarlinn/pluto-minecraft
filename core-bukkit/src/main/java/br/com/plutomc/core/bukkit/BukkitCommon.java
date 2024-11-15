@@ -6,6 +6,7 @@ import br.com.plutomc.core.bukkit.utils.character.handler.ActionHandler;
 import br.com.plutomc.core.bukkit.utils.hologram.Hologram;
 import br.com.plutomc.core.bukkit.utils.hologram.impl.SimpleHologram;
 import br.com.plutomc.core.bukkit.viaversion.ViaBukkitPlugin;
+import br.com.plutomc.core.common.utils.string.CodeCreator;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.PacketType.Play.Client;
 import com.comphenix.protocol.PacketType.Play.Server;
@@ -49,12 +50,12 @@ import br.com.plutomc.core.bukkit.manager.CooldownManager;
 import br.com.plutomc.core.bukkit.manager.HologramManager;
 import br.com.plutomc.core.bukkit.manager.LocationManager;
 import br.com.plutomc.core.bukkit.manager.VanishManager;
-import br.com.plutomc.core.bukkit.member.party.BukkitParty;
+import br.com.plutomc.core.bukkit.account.party.BukkitParty;
 import br.com.plutomc.core.bukkit.protocol.impl.LimiterInjector;
 import br.com.plutomc.core.bukkit.protocol.impl.TranslationInjector;
 import br.com.plutomc.core.bukkit.utils.permission.PermissionManager;
 import br.com.plutomc.core.bukkit.utils.player.PlayerHelper;
-import br.com.plutomc.core.common.member.status.StatusType;
+import br.com.plutomc.core.common.account.status.StatusType;
 import br.com.plutomc.core.common.server.ServerManager;
 import br.com.plutomc.core.common.server.ServerType;
 import net.minecraft.server.v1_8_R3.PlayerList;
@@ -70,7 +71,6 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class BukkitCommon extends ViaBukkitPlugin {
@@ -252,7 +252,7 @@ public abstract class BukkitCommon extends ViaBukkitPlugin {
 
    public void loadServerInfo() {
       ServerType serverType = ServerType.valueOf(this.getConfig().getString("serverType", ServerType.BUNGEECORD.name()).toUpperCase());
-      String serverId = this.getConfig().getString("serverId").toLowerCase();
+      String serverId = serverType.getPrefix() + CodeCreator.DEFAULT_CREATOR.random(4);
       boolean joinEnabled = this.getConfig().getBoolean("joinEnabled", true);
       if (serverType.name().contains("LOBBY")) {
          this.setServerLog(true);
@@ -298,12 +298,7 @@ public abstract class BukkitCommon extends ViaBukkitPlugin {
             String uniqueId = in.readUTF();
             Player p = getInstance().getServer().getPlayer(UUID.fromString(uniqueId));
             if (p != null) {
-               if (CommonPlugin.getInstance().getServerType() == ServerType.RANKUP) {
-                  player.chat("/v");
-               } else {
-                  this.getVanishManager().setPlayerInAdmin(player);
-               }
-
+               this.getVanishManager().setPlayerInAdmin(player);
                player.chat("/tp " + p.getName());
             }
          }

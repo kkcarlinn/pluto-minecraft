@@ -19,7 +19,7 @@ import com.comphenix.protocol.error.ErrorReporter;
 import com.comphenix.protocol.utility.MinecraftVersion;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.plugin.Plugin;
 
 /**

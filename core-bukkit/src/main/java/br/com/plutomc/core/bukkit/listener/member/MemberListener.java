@@ -9,11 +9,11 @@ import br.com.plutomc.core.bukkit.event.member.PlayerUpdatedFieldEvent;
 import br.com.plutomc.core.bukkit.event.player.PlayerAdminEvent;
 import br.com.plutomc.core.bukkit.utils.player.PlayerAPI;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
-import br.com.plutomc.core.bukkit.member.party.BukkitParty;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.party.Party;
-import br.com.plutomc.core.common.member.status.StatusType;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
+import br.com.plutomc.core.bukkit.account.party.BukkitParty;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.party.Party;
+import br.com.plutomc.core.common.account.status.StatusType;
 import br.com.plutomc.core.common.permission.Group;
 import br.com.plutomc.core.common.permission.GroupInfo;
 import org.bukkit.Bukkit;
@@ -35,7 +35,7 @@ public class MemberListener implements Listener {
    public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
       if (event.getLoginResult() == Result.ALLOWED) {
          UUID uniqueId = event.getUniqueId();
-         BukkitMember member = CommonPlugin.getInstance().getMemberData().loadMember(uniqueId, BukkitMember.class);
+         BukkitAccount member = CommonPlugin.getInstance().getAccountData().loadAccount(uniqueId, BukkitAccount.class);
          if (member == null) {
             event.disallow(Result.KICK_OTHER, CommonPlugin.getInstance().getPluginInfo().translate("account-not-exists"));
          } else {
@@ -50,7 +50,7 @@ public class MemberListener implements Listener {
             }
 
             member.connect();
-            CommonPlugin.getInstance().getMemberManager().loadMember(member);
+            CommonPlugin.getInstance().getAccountManager().loadAccount(member);
 
             for(StatusType types : BukkitCommon.getInstance().getPreloadedStatus()) {
                CommonPlugin.getInstance().getStatusManager().loadStatus(uniqueId, types);
@@ -63,10 +63,10 @@ public class MemberListener implements Listener {
       priority = EventPriority.LOWEST
    )
    public void onPlayerLoginLW(PlayerLoginEvent event) {
-      if (CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId()) == null) {
+      if (CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId()) == null) {
          event.disallow(PlayerLoginEvent.Result.KICK_OTHER, CommonPlugin.getInstance().getPluginInfo().translate("account-not-loaded"));
       } else {
-         BukkitMember member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BukkitMember.class);
+         BukkitAccount member = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BukkitAccount.class);
          Player player = event.getPlayer();
          member.setPlayer(player);
       }
@@ -76,10 +76,10 @@ public class MemberListener implements Listener {
       priority = EventPriority.HIGH
    )
    public void onPlayerLogin(final PlayerLoginEvent event) {
-      if (CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId()) == null) {
+      if (CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId()) == null) {
          event.disallow(PlayerLoginEvent.Result.KICK_OTHER, CommonPlugin.getInstance().getPluginInfo().translate("account-not-loaded"));
       } else {
-         final BukkitMember member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BukkitMember.class);
+         final BukkitAccount member = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BukkitAccount.class);
          int admins = BukkitCommon.getInstance().getVanishManager().getPlayersInAdmin().size();
          if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL
             && Bukkit.getOnlinePlayers().size() - admins >= Bukkit.getMaxPlayers()
@@ -111,7 +111,7 @@ public class MemberListener implements Listener {
    )
    public void onPlayerLoginM(PlayerLoginEvent event) {
       if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
-         CommonPlugin.getInstance().getMemberManager().unloadMember(event.getPlayer().getUniqueId());
+         CommonPlugin.getInstance().getAccountManager().unloadAccount(event.getPlayer().getUniqueId());
          CommonPlugin.getInstance().getStatusManager().unloadStatus(event.getPlayer().getUniqueId());
       }
    }
@@ -120,7 +120,7 @@ public class MemberListener implements Listener {
       priority = EventPriority.LOWEST
    )
    public void onPlayerJoin(PlayerJoinEvent event) {
-      if (CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId()) == null) {
+      if (CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId()) == null) {
          event.getPlayer().kickPlayer(CommonPlugin.getInstance().getPluginInfo().translate("account-not-loaded"));
       } else {
          CommonPlugin.getInstance()
@@ -147,7 +147,7 @@ public class MemberListener implements Listener {
    @EventHandler
    public void onPlayerUpdatedField(PlayerUpdatedFieldEvent event) {
       Player player = event.getPlayer();
-      BukkitMember member = event.getBukkitMember();
+      BukkitAccount member = event.getBukkitMember();
       String var4 = event.getField().toLowerCase();
       byte var5 = -1;
       switch(var4.hashCode()) {
@@ -230,18 +230,18 @@ public class MemberListener implements Listener {
       priority = EventPriority.LOWEST
    )
    public void onPlayerQuit(PlayerQuitEvent event) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId());
-      if (member != null) {
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId());
+      if (account != null) {
          CommonPlugin.getInstance()
             .getPluginPlatform()
             .runAsync(
                () -> {
-                  CommonPlugin.getInstance().getMemberManager().unloadMember(member);
+                  CommonPlugin.getInstance().getAccountManager().unloadAccount(account);
                   CommonPlugin.getInstance().getServerData().leavePlayer(event.getPlayer().getUniqueId(), Bukkit.getMaxPlayers());
-                  CommonPlugin.getInstance().getStatusManager().unloadStatus(member.getUniqueId());
-                  Party party = member.getParty();
+                  CommonPlugin.getInstance().getStatusManager().unloadStatus(account.getUniqueId());
+                  Party party = account.getParty();
                   if (party != null
-                     && !party.getMembers().stream().filter(id -> CommonPlugin.getInstance().getMemberManager().getMember(id) != null).findFirst().isPresent()) {
+                     && !party.getMembers().stream().filter(id -> CommonPlugin.getInstance().getAccountManager().getAccount(id) != null).findFirst().isPresent()) {
                      CommonPlugin.getInstance().getPartyData().deleteParty(party);
                      CommonPlugin.getInstance().getPartyManager().unloadParty(party.getPartyId());
                   }

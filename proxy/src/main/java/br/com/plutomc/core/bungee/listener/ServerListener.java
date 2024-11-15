@@ -6,12 +6,12 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import br.com.plutomc.core.bungee.BungeeMain;
-import br.com.plutomc.core.bungee.member.BungeeMember;
+import br.com.plutomc.core.bungee.account.BungeeAccount;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.party.Party;
-import br.com.plutomc.core.common.member.party.PartyRole;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.party.Party;
+import br.com.plutomc.core.common.account.party.PartyRole;
 import br.com.plutomc.core.common.server.ServerType;
 import br.com.plutomc.core.common.server.loadbalancer.server.ProxiedServer;
 import br.com.plutomc.core.common.utils.string.StringFormat;
@@ -38,7 +38,7 @@ public class ServerListener implements Listener {
 
    @EventHandler
    public void onSearchServer(SearchServerEvent event) {
-      BungeeMember member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BungeeMember.class);
+      BungeeAccount member = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BungeeAccount.class);
       member.setProxiedPlayer(event.getPlayer());
       member.loadConfiguration();
       boolean logged = member.getLoginConfiguration().isLogged();
@@ -83,7 +83,7 @@ public class ServerListener implements Listener {
 
    @EventHandler
    public void onServerConnect(ServerConnectEvent event) {
-      BungeeMember member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BungeeMember.class);
+      BungeeAccount member = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BungeeAccount.class);
       if (member == null) {
          event.setCancelled(true);
          event.getPlayer().disconnect("§cHouve um problema com a sua conta!");
@@ -105,7 +105,7 @@ public class ServerListener implements Listener {
 
    @EventHandler
    public void onServerConnected(ServerConnectedEvent event) {
-      BungeeMember member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BungeeMember.class);
+      BungeeAccount member = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BungeeAccount.class);
       if (member != null) {
          if (this.playerUpdateSet.contains(member.getUniqueId())) {
             ProxyServer.getInstance().getScheduler().schedule(BungeeMain.getInstance(), () -> member.saveConfig(), 3L, TimeUnit.SECONDS);
@@ -119,7 +119,7 @@ public class ServerListener implements Listener {
                   member.sendMessage("§eO servidor não suporta todos os membros da sua party, talvez alguns dos jogadores não sejam teletransportados.");
                }
 
-               party.getMembers().stream().map(id -> CommonPlugin.getInstance().getMemberManager().getMember(id, BungeeMember.class)).forEach(partyMember -> {
+               party.getMembers().stream().map(id -> CommonPlugin.getInstance().getAccountManager().getAccount(id, BungeeAccount.class)).forEach(partyMember -> {
                   if (partyMember != null && !partyMember.getActualServerId().equals(event.getServer().getInfo().getName())) {
                      partyMember.getProxiedPlayer().connect(event.getServer().getInfo());
                   }
@@ -134,8 +134,8 @@ public class ServerListener implements Listener {
    @EventHandler
    public void onServerKick(ServerKickEvent event) {
       if (!event.getKickReason().toLowerCase().contains("kick") && !event.getKickReason().toLowerCase().contains("expulso")) {
-         Member member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId());
-         if (member == null || member.getLoginConfiguration().isLogged()) {
+         Account account = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId());
+         if (account == null || account.getLoginConfiguration().isLogged()) {
             ProxiedPlayer player = event.getPlayer();
             ProxiedServer kickedFrom = BungeeMain.getInstance().getServerManager().getServer(event.getKickedFrom().getName());
             ProxiedServer server = kickedFrom == null

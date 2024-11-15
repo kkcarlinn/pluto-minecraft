@@ -6,15 +6,15 @@ import br.com.plutomc.game.bedwars.utils.GamerHelper;
 import com.google.common.base.Joiner;
 import br.com.plutomc.game.engine.ArcadeCommon;
 import br.com.plutomc.game.bedwars.island.Island;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.bukkit.utils.item.ItemBuilder;
 import br.com.plutomc.core.bukkit.utils.menu.MenuInventory;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
-import br.com.plutomc.core.common.member.status.Status;
-import br.com.plutomc.core.common.member.status.StatusType;
-import br.com.plutomc.core.common.member.status.types.BedwarsCategory;
+import br.com.plutomc.core.common.account.status.Status;
+import br.com.plutomc.core.common.account.status.StatusType;
+import br.com.plutomc.core.common.account.status.types.BedwarsCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,7 +26,7 @@ public class GameCommand implements CommandClass {
       console = false
    )
    public void globalCommand(CommandArgs cmdArgs) {
-      Player sender = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+      Player sender = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
       if (GameMain.getInstance().getPlayersPerTeam() == 1) {
          sender.sendMessage("§cO comando está desativado nessa sala.");
       } else {
@@ -65,6 +65,6 @@ public class GameCommand implements CommandClass {
          new ItemBuilder().name("§aRastreador").lore("§22 esmeraldas").type(Material.COMPASS).build(),
          (player, inv, type, stack, slot) -> GamerHelper.buyItem(player, new ShopCategory.ShopItem(stack, new ShopCategory.ShopPrice(Material.EMERALD, 2)))
       );
-      menuInventory.open(cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer());
+      menuInventory.open(cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer());
    }
 }

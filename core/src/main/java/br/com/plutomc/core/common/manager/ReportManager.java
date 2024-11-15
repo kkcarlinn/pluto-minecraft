@@ -21,11 +21,11 @@ public class ReportManager {
 
    public void createReport(Report report) {
       this.loadReport(report);
-      CommonPlugin.getInstance().getMemberData().createReport(report);
+      CommonPlugin.getInstance().getAccountData().createReport(report);
    }
 
    public void loadReports() {
-      for(Report report : CommonPlugin.getInstance().getMemberData().loadReports()) {
+      for(Report report : CommonPlugin.getInstance().getAccountData().loadReports()) {
          this.loadReport(report);
       }
    }

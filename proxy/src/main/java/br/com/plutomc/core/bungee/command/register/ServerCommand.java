@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.bungee.BungeeMain;
-import br.com.plutomc.core.bungee.member.BungeeMember;
+import br.com.plutomc.core.bungee.account.BungeeAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
 import br.com.plutomc.core.common.command.CommandSender;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.report.Report;
 import br.com.plutomc.core.common.server.ServerType;
 import br.com.plutomc.core.common.server.loadbalancer.server.ProxiedServer;
@@ -33,7 +33,7 @@ public class ServerCommand implements CommandClass {
          if (sender.isPlayer()) {
             sender.sendMessage(
                sender.getLanguage()
-                  .t("command-ping-your-latency", "%ping%", String.valueOf(cmdArgs.getSenderAsMember(BungeeMember.class).getProxiedPlayer().getPing()))
+                  .t("command-ping-your-latency", "%ping%", String.valueOf(cmdArgs.getSenderAsMember(BungeeAccount.class).getProxiedPlayer().getPing()))
             );
          } else {
             sender.sendMessage("§aO ping médio do servidor é de " + BungeeMain.getInstance().getAveragePing(ProxyServer.getInstance().getPlayers()) + "ms.");
@@ -49,6 +49,18 @@ public class ServerCommand implements CommandClass {
    }
 
    @CommandFramework.Command(
+      name = "serverid",
+      aliases = {"sid"})
+   public void serverIdCommand (CommandArgs args) {
+      if(args.isPlayer()) {
+            args.getSender().sendMessage("§eNome: §b" +  args.getSenderAsMember().getActualServerId());
+            args.getSender().sendMessage("§eCategoria: §b" +  args.getSenderAsMember().getActualServerType().getTypeName());
+      } else {
+            args.getSender().sendMessage("§cVocê não pode executar esse comando no console.");
+      }
+   }
+
+   @CommandFramework.Command(
       name = "report",
       aliases = {"rp"}
    )
@@ -58,7 +70,7 @@ public class ServerCommand implements CommandClass {
       if (args.length <= 1) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <player> <reason>§e para reportar um jogador.");
       } else {
-         Member target = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[0]);
+         Account target = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[0]);
          if (target == null) {
             sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[0]));
          } else {
@@ -78,12 +90,12 @@ public class ServerCommand implements CommandClass {
             }
 
             sender.sendMessage("§aSua denúncia sobre o jogador " + target.getPlayerName() + " foi enviada ao servidor.");
-            CommonPlugin.getInstance().getMemberManager().actionbar("§aUma nova denúncia foi registrada.", "command.report");
+            CommonPlugin.getInstance().getAccountManager().actionbar("§aUma nova denúncia foi registrada.", "command.report");
             CommonPlugin.getInstance()
-               .getMemberManager()
-               .getMembers()
+               .getAccountManager()
+               .getAccounts()
                .stream()
-               .filter(m -> m.isStaff() && m.getMemberConfiguration().isReportsEnabled())
+               .filter(m -> m.isStaff() && m.getAccountConfiguration().isReportsEnabled())
                .forEach(m -> m.sendMessage("§eO jogador " + sender.getName() + " denunciou o jogador " + target.getName() + " por " + reason));
          }
       }
@@ -95,7 +107,7 @@ public class ServerCommand implements CommandClass {
       console = false
    )
    public void serverCommand(CommandArgs cmdArgs) {
-      BungeeMember member = cmdArgs.getSenderAsMember(BungeeMember.class);
+      BungeeAccount member = cmdArgs.getSenderAsMember(BungeeAccount.class);
       ProxiedPlayer player = member.getProxiedPlayer();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
@@ -118,7 +130,7 @@ public class ServerCommand implements CommandClass {
       console = false
    )
    public void eventoCommand(CommandArgs cmdArgs) {
-      BungeeMember member = cmdArgs.getSenderAsMember(BungeeMember.class);
+      BungeeAccount member = cmdArgs.getSenderAsMember(BungeeAccount.class);
       ProxiedPlayer player = member.getProxiedPlayer();
       ProxiedServer server = BungeeMain.getInstance().getServerManager().getBalancer(ServerType.EVENTO).next();
       if (server == null || server.getServerInfo() == null) {
@@ -136,7 +148,7 @@ public class ServerCommand implements CommandClass {
       console = false
    )
    public void lobbyCommand(CommandArgs cmdArgs) {
-      BungeeMember member = cmdArgs.getSenderAsMember(BungeeMember.class);
+      BungeeAccount member = cmdArgs.getSenderAsMember(BungeeAccount.class);
       ProxiedPlayer player = member.getProxiedPlayer();
       ProxiedServer server = BungeeMain.getInstance()
          .getServerManager()
@@ -157,7 +169,7 @@ public class ServerCommand implements CommandClass {
       console = false
    )
    public void playCommand(CommandArgs cmdArgs) {
-      ProxiedPlayer player = cmdArgs.getSenderAsMember(BungeeMember.class).getProxiedPlayer();
+      ProxiedPlayer player = cmdArgs.getSenderAsMember(BungeeAccount.class).getProxiedPlayer();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          player.sendMessage(cmdArgs.getSender().getLanguage().t("command.play.usage"));
@@ -204,8 +216,8 @@ public class ServerCommand implements CommandClass {
                BungeeMain.getInstance().setWhitelistEnabled(true, time);
                sender.sendMessage("§aVocê §aativou§a a whitelist!");
                CommonPlugin.getInstance()
-                  .getMemberManager()
-                  .getMembers(BungeeMember.class)
+                  .getAccountManager()
+                  .getAccounts(BungeeAccount.class)
                   .stream()
                   .filter(bungee -> !bungee.hasPermission("command.admin"))
                   .forEach(bungee -> bungee.getProxiedPlayer().disconnect("§cO servidor entrou em manutenção."));
@@ -218,34 +230,34 @@ public class ServerCommand implements CommandClass {
                if (args.length == 1) {
                   sender.sendMessage("§eUse /" + cmdArgs.getLabel() + " add <player> para adicionar alguem a whitelist.");
                } else {
-                  Member member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[1]);
-                  if (member == null) {
-                     member = CommonPlugin.getInstance().getMemberData().loadMember(args[1], true);
-                     if (member == null) {
+                  Account account = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[1]);
+                  if (account == null) {
+                     account = CommonPlugin.getInstance().getAccountData().loadAccount(args[1], true);
+                     if (account == null) {
                         sender.sendMessage("§cO jogador " + args[1] + " não existe!");
                         break;
                      }
                   }
 
-                  BungeeMain.getInstance().addMemberToWhiteList(member.getPlayerName());
-                  sender.sendMessage("§aO jogador §a" + member.getPlayerName() + "§a foi adicionado a whitelist!");
+                  BungeeMain.getInstance().addMemberToWhiteList(account.getPlayerName());
+                  sender.sendMessage("§aO jogador §a" + account.getPlayerName() + "§a foi adicionado a whitelist!");
                }
                break;
             case "remove":
                if (args.length == 1) {
                   sender.sendMessage("§eUse /" + cmdArgs.getLabel() + " remove <player> para remover alguem da whitelist.");
                } else {
-                  Member member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[1]);
-                  if (member == null) {
-                     member = CommonPlugin.getInstance().getMemberData().loadMember(args[1], true);
-                     if (member == null) {
+                  Account account = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[1]);
+                  if (account == null) {
+                     account = CommonPlugin.getInstance().getAccountData().loadAccount(args[1], true);
+                     if (account == null) {
                         sender.sendMessage("§cO jogador " + args[1] + " não existe!");
                         break;
                      }
                   }
 
-                  BungeeMain.getInstance().removeMemberFromWhiteList(member.getPlayerName());
-                  sender.sendMessage("§aO jogador §a" + member.getPlayerName() + "§a foi removido da whitelist!");
+                  BungeeMain.getInstance().removeMemberFromWhiteList(account.getPlayerName());
+                  sender.sendMessage("§aO jogador §a" + account.getPlayerName() + "§a foi removido da whitelist!");
                }
                break;
             case "list":

@@ -4,13 +4,13 @@ import java.util.List;
 
 import br.com.plutomc.core.bukkit.utils.item.ItemBuilder;
 import br.com.plutomc.core.bukkit.utils.menu.MenuInventory;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.punish.PunishType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class PunishInfoInventory extends MenuInventory {
-   public PunishInfoInventory(Player player, Member target) {
+   public PunishInfoInventory(Player player, Account target) {
       super("§7Punições " + target.getName(), 3);
       this.setItem(
          10,

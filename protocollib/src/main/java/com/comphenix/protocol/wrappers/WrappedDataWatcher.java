@@ -34,7 +34,7 @@ import com.comphenix.protocol.wrappers.collection.ConvertedMap;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableBiMap;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;

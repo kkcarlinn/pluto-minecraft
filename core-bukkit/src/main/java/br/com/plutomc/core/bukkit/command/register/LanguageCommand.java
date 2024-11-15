@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
 import br.com.plutomc.core.common.command.CommandSender;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import net.md_5.bungee.api.ChatColor;
 
 public class LanguageCommand implements CommandClass {
@@ -29,7 +29,7 @@ public class LanguageCommand implements CommandClass {
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          if (cmdArgs.isPlayer()) {
-            new br.com.plutomc.core.bukkit.menu.LanguageInventory(((BukkitMember)sender).getPlayer());
+            new br.com.plutomc.core.bukkit.menu.LanguageInventory(((BukkitAccount)sender).getPlayer());
          } else {
             sender.sendMessage(sender.getLanguage().t("command-language-usage", "%label%", cmdArgs.getLabel()));
          }
@@ -39,7 +39,7 @@ public class LanguageCommand implements CommandClass {
             sender.sendMessage(sender.getLanguage().t("language-not-found", "%language%", args[0]));
          } else {
             if (cmdArgs.isPlayer()) {
-               ((Member)sender).setLanguage(language);
+               ((Account)sender).setLanguage(language);
             } else {
                CommonPlugin.getInstance().getPluginInfo().setDefaultLanguage(language);
             }
@@ -59,7 +59,7 @@ public class LanguageCommand implements CommandClass {
       if (args.length == 0) {
          sender.sendMessage(sender.getLanguage().t("command-translate-usage", "%label%", cmdArgs.getLabel()));
          if (cmdArgs.isPlayer()) {
-            new LanguageInventory(((BukkitMember)sender).getPlayer());
+            new LanguageInventory(((BukkitAccount)sender).getPlayer());
          }
       } else {
          Language language = Language.getLanguageByName(args[0]);

@@ -3,7 +3,7 @@ package br.com.plutomc.core.common.command;
 import java.util.UUID;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Profile;
+import br.com.plutomc.core.common.account.Profile;
 import br.com.plutomc.core.common.permission.Group;
 import net.md_5.bungee.api.chat.BaseComponent;
 

@@ -1,6 +1,6 @@
 package br.com.plutomc.core.common.command;
 
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 
 public abstract class CommandArgs {
    private final CommandSender sender;
@@ -23,11 +23,11 @@ public abstract class CommandArgs {
       this.args = modArgs;
    }
 
-   public Member getSenderAsMember() {
-      return Member.class.cast(this.sender);
+   public Account getSenderAsMember() {
+      return Account.class.cast(this.sender);
    }
 
-   public <T extends Member> T getSenderAsMember(Class<T> t) {
+   public <T extends Account> T getSenderAsMember(Class<T> t) {
       return t.cast(this.sender);
    }
 

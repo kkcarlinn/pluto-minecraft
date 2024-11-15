@@ -1,42 +1,42 @@
 package br.com.plutomc.core.common.server;
 
 import br.com.plutomc.core.common.utils.string.StringFormat;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
 public enum ServerType {
-   BUILD,
-   LOGIN,
-   LOBBY,
-   BW_LOBBY,
-   SW_LOBBY,
-   HG_LOBBY,
-   PVP_LOBBY,
-   DUELS_LOBBY,
-   DUELS_SIMULATOR,
-   DUELS_GAPPLE,
-   DUELS_NODEBUFF,
-   DUELS_SCRIM,
-   FPS,
-   LAVA,
-   ARENA,
-   HG,
-   MINIPLUTO,
-   EVENTO,
-   RANKUP,
-   SW_SOLO,
-   SW_DUOS,
-   SW_TRIO,
-   SW_SQUAD,
-   BW_SOLO,
-   BW_DUOS,
-   BW_TRIO,
-   BW_SQUAD,
-   BW_1X1,
-   BW_2X2,
-   BW_3X3,
-   BW_4X4,
-   BUNGEECORD,
-   DISCORD,
-   DUELS_BOXING;
+   BUILD("build", "bl"),
+   LOGIN("lobbyhost", "lh"),
+   LOBBY("lobbyhost", "lh"),
+   BW_LOBBY("lobbyhost", "blh"),
+   SW_LOBBY("lobbyhost", "slh"),
+   HG_LOBBY("lobbyhost", "hlh"),
+   PVP_LOBBY("lobbyhost", "plh"),
+   DUELS_LOBBY("lobbyhost", "dlh"),
+   FPS("pvp", "fps"),
+   LAVA("pvp", "lava"),
+   ARENA("pvp", "arena"),
+   HG("hg", "hg"),
+   MINIPLUTO("hg", "mp"),
+   EVENTO("hg", "ev"),
+   SW_SOLO("arcade", "sw"),
+   SW_DUOS("arcade", "sw"),
+   SW_TRIO("arcade", "sw"),
+   SW_SQUAD("arcade", "sw"),
+   BW_SOLO("arcade", "bw"),
+   BW_DUOS("arcade", "bw"),
+   BW_TRIO("arcade", "bw"),
+   BW_SQUAD("arcade", "bw"),
+   BW_1X1("arcade", "bw"),
+   BW_2X2("arcade", "bw"),
+   BW_3X3("arcade", "bw"),
+   BW_4X4("arcade", "bw"),
+   BUNGEECORD("proxy", "proxy"),
+   DISCORD("discord", "dc"),;
+
+   private String typeName, prefix;
 
    public int getPlayersPerTeam() {
       if (this.name().contains("SOLO") || this.name().contains("1X1")) {

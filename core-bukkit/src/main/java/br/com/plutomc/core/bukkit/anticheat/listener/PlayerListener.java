@@ -3,7 +3,7 @@ package br.com.plutomc.core.bukkit.anticheat.listener;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.bukkit.anticheat.StormCore;
 import br.com.plutomc.core.bukkit.anticheat.gamer.UserData;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -77,6 +77,6 @@ public class PlayerListener implements Listener {
    }
 
    public UserData getUserData(Player player) {
-      return CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId(), BukkitMember.class).getUserData();
+      return CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId(), BukkitAccount.class).getUserData();
    }
 }

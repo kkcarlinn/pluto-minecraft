@@ -2,7 +2,7 @@ package br.com.plutomc.core.common.packet.types.party;
 
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.party.Party;
+import br.com.plutomc.core.common.account.party.Party;
 import br.com.plutomc.core.common.packet.Packet;
 import br.com.plutomc.core.common.packet.PacketType;
 import com.google.gson.JsonObject;

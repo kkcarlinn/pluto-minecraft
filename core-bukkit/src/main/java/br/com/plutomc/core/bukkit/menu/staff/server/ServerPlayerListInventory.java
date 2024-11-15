@@ -8,7 +8,7 @@ import br.com.plutomc.core.bukkit.utils.item.ItemBuilder;
 import br.com.plutomc.core.bukkit.utils.menu.MenuInventory;
 import br.com.plutomc.core.bukkit.utils.menu.MenuItem;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.server.loadbalancer.server.ProxiedServer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ public class ServerPlayerListInventory extends MenuInventory {
       List<PlayerInfo> items = new ArrayList<>();
 
       for(UUID playerId : server.getPlayers()) {
-         items.add(new PlayerInfo(playerId, CommonPlugin.getInstance().getMemberManager().getMember(playerId)));
+         items.add(new PlayerInfo(playerId, CommonPlugin.getInstance().getAccountManager().getAccount(playerId)));
       }
 
       int pageStart = 0;
@@ -88,13 +88,13 @@ public class ServerPlayerListInventory extends MenuInventory {
 
    public class PlayerInfo {
       private UUID playerId;
-      private Member member;
+      private Account account;
       private int slot;
       private boolean has;
 
-      public PlayerInfo(UUID playerId, Member member) {
+      public PlayerInfo(UUID playerId, Account account) {
          this.playerId = playerId;
-         this.member = member;
+         this.account = account;
       }
 
       public void setSlot(int slot) {
@@ -112,8 +112,8 @@ public class ServerPlayerListInventory extends MenuInventory {
          return this.playerId;
       }
 
-      public Member getMember() {
-         return this.member;
+      public Account getMember() {
+         return this.account;
       }
 
       public int getSlot() {

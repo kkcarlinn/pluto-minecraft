@@ -9,8 +9,8 @@ import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.command.CommandSender;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.Profile;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.Profile;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 
@@ -77,14 +77,14 @@ public class BukkitCommandSender implements CommandSender {
 
    @Override
    public Language getLanguage() {
-      return this.isPlayer() ? ((Member)this.getSender()).getLanguage() : CommonPlugin.getInstance().getPluginInfo().getDefaultLanguage();
+      return this.isPlayer() ? ((Account)this.getSender()).getLanguage() : CommonPlugin.getInstance().getPluginInfo().getDefaultLanguage();
    }
 
    @Override
    public boolean isStaff() {
       if (this.sender instanceof Player) {
-         Member member = CommonPlugin.getInstance().getMemberManager().getMember(((Player)this.sender).getUniqueId());
-         return member.getServerGroup().isStaff();
+         Account account = CommonPlugin.getInstance().getAccountManager().getAccount(((Player)this.sender).getUniqueId());
+         return account.getServerGroup().isStaff();
       } else {
          return true;
       }
@@ -92,7 +92,7 @@ public class BukkitCommandSender implements CommandSender {
 
    @Override
    public boolean isUserBlocked(Profile profile) {
-      return this.isPlayer() ? ((Member)this.getSender()).isUserBlocked(profile) : false;
+      return this.isPlayer() ? ((Account)this.getSender()).isUserBlocked(profile) : false;
    }
 
    public BukkitCommandSender(org.bukkit.command.CommandSender sender) {

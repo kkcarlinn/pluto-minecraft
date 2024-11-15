@@ -6,7 +6,7 @@ import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.core.bukkit.menu.report.ReportInventory;
 import br.com.plutomc.core.bukkit.menu.report.ReportListInventory;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
@@ -21,7 +21,7 @@ public class ReportCommand implements CommandClass {
       console = false
    )
    public void reportCommand(CommandArgs cmdArgs) {
-      Player sender = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+      Player sender = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          new ReportListInventory(sender, 1);

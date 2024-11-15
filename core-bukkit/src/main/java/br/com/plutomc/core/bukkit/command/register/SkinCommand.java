@@ -6,11 +6,11 @@ import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import java.util.Optional;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
-import br.com.plutomc.core.common.member.configuration.LoginConfiguration;
+import br.com.plutomc.core.common.account.configuration.LoginConfiguration;
 import br.com.plutomc.core.common.packet.types.skin.SkinChange;
 import br.com.plutomc.core.common.utils.skin.Skin;
 
@@ -21,7 +21,7 @@ public class SkinCommand implements CommandClass {
       console = false
    )
    public void skinresetCommand(CommandArgs cmdArgs) {
-      BukkitMember sender = cmdArgs.getSenderAsMember(BukkitMember.class);
+      BukkitAccount sender = cmdArgs.getSenderAsMember(BukkitAccount.class);
       if (!sender.isCustomSkin()) {
          sender.sendMessage("§cVocê não está usando uma skin customizada.");
       } else {
@@ -49,7 +49,7 @@ public class SkinCommand implements CommandClass {
       console = false
    )
    public void skinCommand(CommandArgs cmdArgs) {
-      BukkitMember sender = cmdArgs.getSenderAsMember(BukkitMember.class);
+      BukkitAccount sender = cmdArgs.getSenderAsMember(BukkitAccount.class);
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          new SkinInventory(sender.getPlayer());

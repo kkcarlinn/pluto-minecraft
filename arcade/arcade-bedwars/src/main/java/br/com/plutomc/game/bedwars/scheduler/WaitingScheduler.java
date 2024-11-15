@@ -7,12 +7,12 @@ import br.com.plutomc.core.bukkit.event.player.PlayerMoveUpdateEvent;
 import br.com.plutomc.game.engine.ArcadeCommon;
 import br.com.plutomc.game.bedwars.gamer.Gamer;
 import br.com.plutomc.game.engine.scheduler.Scheduler;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.bukkit.utils.item.ActionItemStack;
 import br.com.plutomc.core.bukkit.utils.item.ItemBuilder;
 import br.com.plutomc.core.bukkit.utils.player.PlayerHelper;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.server.ServerType;
 import br.com.plutomc.core.common.server.loadbalancer.server.MinigameState;
 import br.com.plutomc.core.common.utils.string.StringFormat;
@@ -54,7 +54,7 @@ public class WaitingScheduler implements Scheduler, Listener {
    public void onPlayerJoin(PlayerJoinEvent event) {
       Player player = event.getPlayer();
       Gamer gamer = ArcadeCommon.getInstance().getGamerManager().getGamer(player.getUniqueId(), Gamer.class);
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
       player.teleport(ArcadeCommon.getInstance().getLocationManager().getLocation("spawn"));
       player.setHealth(20.0);
       player.setMaxHealth(20.0);
@@ -70,10 +70,10 @@ public class WaitingScheduler implements Scheduler, Listener {
       player.getInventory().setItem(8, ACTION_ITEM_STACK.getItemStack());
       gamer.setAlive(true);
       gamer.setSpectator(false);
-      if (player.hasPermission("command.admin") && member.getMemberConfiguration().isAdminOnJoin()) {
+      if (player.hasPermission("command.admin") && account.getAccountConfiguration().isAdminOnJoin()) {
          player.setMetadata("admin", new FixedMetadataValue(ArcadeCommon.getInstance(), true));
       } else {
-         this.broadcast(member.getTag().getRealPrefix(), event.getPlayer().getName(), false);
+         this.broadcast(account.getTag().getRealPrefix(), event.getPlayer().getName(), false);
       }
    }
 
@@ -81,12 +81,12 @@ public class WaitingScheduler implements Scheduler, Listener {
       priority = EventPriority.LOW
    )
    public void onPlayerQuit(final PlayerQuitEvent event) {
-      final Member member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId());
+      final Account account = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId());
       if (!ArcadeCommon.getInstance().getVanishManager().isPlayerInAdmin(event.getPlayer())) {
          (new BukkitRunnable() {
             @Override
             public void run() {
-               WaitingScheduler.this.broadcast(member.getTag().getRealPrefix(), event.getPlayer().getName(), true);
+               WaitingScheduler.this.broadcast(account.getTag().getRealPrefix(), event.getPlayer().getName(), true);
             }
          }).runTaskLater(ArcadeCommon.getInstance(), 7L);
       }
@@ -101,13 +101,13 @@ public class WaitingScheduler implements Scheduler, Listener {
    )
    public void onPlayerAdmin(PlayerAdminEvent event) {
       Player player = event.getPlayer();
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
       if (player.hasMetadata("admin")) {
          player.removeMetadata("admin", ArcadeCommon.getInstance());
       } else if (event.getAdminMode() == PlayerAdminEvent.AdminMode.ADMIN) {
-         this.broadcast(member.getTag().getRealPrefix(), event.getPlayer().getName(), true);
+         this.broadcast(account.getTag().getRealPrefix(), event.getPlayer().getName(), true);
       } else {
-         this.broadcast(member.getTag().getRealPrefix(), event.getPlayer().getName(), false);
+         this.broadcast(account.getTag().getRealPrefix(), event.getPlayer().getName(), false);
       }
    }
 
@@ -118,24 +118,24 @@ public class WaitingScheduler implements Scheduler, Listener {
 
    @EventHandler
    public void onBlockBreak(BlockBreakEvent event) {
-      event.setCancelled(!CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BukkitMember.class).isBuildEnabled());
+      event.setCancelled(!CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BukkitAccount.class).isBuildEnabled());
    }
 
    @EventHandler
    public void onBlockPlace(BlockPlaceEvent event) {
-      event.setCancelled(!CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BukkitMember.class).isBuildEnabled());
+      event.setCancelled(!CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BukkitAccount.class).isBuildEnabled());
    }
 
    @EventHandler
    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-      event.setCancelled(!CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BukkitMember.class).isBuildEnabled());
+      event.setCancelled(!CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BukkitAccount.class).isBuildEnabled());
    }
 
    @EventHandler(
       priority = EventPriority.HIGHEST
    )
    public void onPlayerInteract(PlayerInteractEvent event) {
-      event.setCancelled(!CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BukkitMember.class).isBuildEnabled());
+      event.setCancelled(!CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BukkitAccount.class).isBuildEnabled());
    }
 
    @EventHandler

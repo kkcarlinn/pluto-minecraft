@@ -120,7 +120,7 @@ public class ServerManager {
       }
    }
 
-   public void setTotalMembers(int totalMembers) {
+   public void setTotalPlayers(int totalMembers) {
       this.totalMembers = totalMembers;
    }
 

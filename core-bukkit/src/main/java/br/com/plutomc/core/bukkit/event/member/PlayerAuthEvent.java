@@ -1,18 +1,18 @@
 package br.com.plutomc.core.bukkit.event.member;
 
 import br.com.plutomc.core.bukkit.event.PlayerEvent;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import org.bukkit.entity.Player;
 
 public class PlayerAuthEvent extends PlayerEvent {
-   private Member member;
+   private Account account;
 
-   public PlayerAuthEvent(Player player, Member member) {
+   public PlayerAuthEvent(Player player, Account account) {
       super(player);
-      this.member = member;
+      this.account = account;
    }
 
-   public Member getMember() {
-      return this.member;
+   public Account getMember() {
+      return this.account;
    }
 }

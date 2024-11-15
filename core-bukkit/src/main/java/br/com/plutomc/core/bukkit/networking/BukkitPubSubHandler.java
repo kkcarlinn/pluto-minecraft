@@ -15,8 +15,8 @@ import java.util.logging.Level;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.backend.data.DataServerMessage;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.packet.Packet;
 import br.com.plutomc.core.common.packet.PacketType;
 import br.com.plutomc.core.common.server.ServerType;
@@ -44,17 +44,17 @@ public class BukkitPubSubHandler extends JedisPubSub {
                }
                break;
             case "server_members":
-               BukkitCommon.getInstance().getServerManager().setTotalMembers(jsonObject.get("totalMembers").getAsInt());
+               BukkitCommon.getInstance().getServerManager().setTotalPlayers(jsonObject.get("totalMembers").getAsInt());
                Bukkit.getPluginManager().callEvent(new PlayerChangeEvent(jsonObject.get("totalMembers").getAsInt()));
                break;
             case "member_field":
                if (jsonObject.has("source") && !jsonObject.get("source").getAsString().equals(CommonPlugin.getInstance().getServerId())) {
                   UUID uuid = UUID.fromString(jsonObject.get("uniqueId").getAsString());
-                  BukkitMember player = CommonPlugin.getInstance().getMemberManager().getMember(uuid, BukkitMember.class);
+                  BukkitAccount player = CommonPlugin.getInstance().getAccountManager().getAccount(uuid, BukkitAccount.class);
                   boolean pass = false;
                   if (player != null) {
                      try {
-                        Field field = this.getField(Member.class, jsonObject.get("field").getAsString());
+                        Field field = this.getField(Account.class, jsonObject.get("field").getAsString());
                         Object oldObject = field.get(player);
                         Object object = CommonConst.GSON.fromJson(jsonObject.get("value"), field.getGenericType());
                         PlayerUpdateFieldEvent event = new PlayerUpdateFieldEvent(
@@ -73,7 +73,7 @@ public class BukkitPubSubHandler extends JedisPubSub {
 
                      if (pass && jsonObject.get("field").getAsString().toLowerCase().contains("configuration")) {
                         try {
-                           Field field = Member.class.getDeclaredField(jsonObject.get("field").getAsString());
+                           Field field = Account.class.getDeclaredField(jsonObject.get("field").getAsString());
                            field.setAccessible(true);
                            Object object = field.get(player);
                            Field memberField = object.getClass().getDeclaredField("member");

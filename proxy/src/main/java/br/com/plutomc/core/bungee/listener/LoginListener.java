@@ -111,8 +111,8 @@ public class LoginListener implements Listener {
                      .runAsync(
                         () -> {
                            boolean onlineMode = true;
-                           if (CommonPlugin.getInstance().getMemberData().isRedisCached(playerName)) {
-                              onlineMode = CommonPlugin.getInstance().getMemberData().isConnectionPremium(playerName);
+                           if (CommonPlugin.getInstance().getAccountData().isRedisCached(playerName)) {
+                              onlineMode = CommonPlugin.getInstance().getAccountData().isConnectionPremium(playerName);
                               CommonPlugin.getInstance()
                                  .debug("The player " + event.getConnection().getName() + " is " + (onlineMode ? "premium" : "cracked") + " (cached)");
                            } else {
@@ -127,7 +127,7 @@ public class LoginListener implements Listener {
       
                               if (save) {
                                  CommonPlugin.getInstance()
-                                    .getMemberData()
+                                    .getAccountData()
                                     .setConnectionStatus(
                                        playerName,
                                        uniqueId == null ? UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(Charsets.UTF_8)) : uniqueId,

@@ -5,7 +5,7 @@ import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.backend.data.PartyData;
 import br.com.plutomc.core.common.backend.mongodb.MongoConnection;
 import br.com.plutomc.core.common.backend.mongodb.MongoQuery;
-import br.com.plutomc.core.common.member.party.Party;
+import br.com.plutomc.core.common.account.party.Party;
 import br.com.plutomc.core.common.packet.types.party.PartyCreate;
 import br.com.plutomc.core.common.packet.types.party.PartyDelete;
 import br.com.plutomc.core.common.packet.types.party.PartyField;
@@ -45,7 +45,7 @@ public class PartyDataImpl implements PartyData {
                         .server(
                            party.getMembers()
                               .stream()
-                              .map(id -> CommonPlugin.getInstance().getMemberManager().getMember(id).getActualServerId())
+                              .map(id -> CommonPlugin.getInstance().getAccountManager().getAccount(id).getActualServerId())
                               .toArray(x$0 -> new String[x$0])
                         )
                   )
@@ -69,8 +69,8 @@ public class PartyDataImpl implements PartyData {
                         .server(
                            party.getMembers()
                               .stream()
-                              .filter(id -> CommonPlugin.getInstance().getMemberManager().getMember(id) != null)
-                              .map(id -> CommonPlugin.getInstance().getMemberManager().getMember(id).getActualServerId())
+                              .filter(id -> CommonPlugin.getInstance().getAccountManager().getAccount(id) != null)
+                              .map(id -> CommonPlugin.getInstance().getAccountManager().getAccount(id).getActualServerId())
                               .distinct()
                               .toArray(x$0 -> new String[x$0])
                         )
@@ -94,8 +94,8 @@ public class PartyDataImpl implements PartyData {
                            .server(
                               party.getMembers()
                                  .stream()
-                                 .filter(id -> CommonPlugin.getInstance().getMemberManager().getMember(id) != null)
-                                 .map(id -> CommonPlugin.getInstance().getMemberManager().getMember(id).getActualServerId())
+                                 .filter(id -> CommonPlugin.getInstance().getAccountManager().getAccount(id) != null)
+                                 .map(id -> CommonPlugin.getInstance().getAccountManager().getAccount(id).getActualServerId())
                                  .distinct()
                                  .toArray(x$0 -> new String[x$0])
                            )

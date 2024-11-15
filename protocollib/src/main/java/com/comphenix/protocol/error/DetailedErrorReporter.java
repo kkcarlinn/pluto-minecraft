@@ -39,8 +39,8 @@ import com.comphenix.protocol.reflect.PrettyPrinter;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Primitives;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 

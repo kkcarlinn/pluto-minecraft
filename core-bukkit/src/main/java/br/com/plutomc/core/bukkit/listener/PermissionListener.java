@@ -9,7 +9,7 @@ import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.core.bukkit.event.member.PlayerGroupChangeEvent;
 import br.com.plutomc.core.bukkit.utils.permission.PermissionManager;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.permission.Group;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,8 +69,8 @@ public class PermissionListener implements Listener {
    }
 
    public void updateAttachment(Player player) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-      if (member != null) {
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+      if (account != null) {
          PermissionAttachment attach = this.attachments.get(player.getUniqueId());
          Permission playerPerm = this.getCreateWrapper(player, player.getUniqueId().toString());
          if (attach == null) {
@@ -84,7 +84,7 @@ public class PermissionListener implements Listener {
 
          playerPerm.getChildren().clear();
 
-         for(Group group : member.getGroups()
+         for(Group group : account.getGroups()
             .keySet()
             .stream()
             .map(groupName -> CommonPlugin.getInstance().getPluginInfo().getGroupByName(groupName))
@@ -97,7 +97,7 @@ public class PermissionListener implements Listener {
             }
          }
 
-         for(String perm : member.getPermissions()) {
+         for(String perm : account.getPermissions()) {
             if (!playerPerm.getChildren().containsKey(perm)) {
                playerPerm.getChildren().put(perm, true);
             }

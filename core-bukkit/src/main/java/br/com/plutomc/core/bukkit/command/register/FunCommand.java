@@ -1,6 +1,6 @@
 package br.com.plutomc.core.bukkit.command.register;
 
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
@@ -35,7 +35,7 @@ public class FunCommand implements CommandClass {
             sender.sendMessage("§cPor favor especifique um jogador!");
         }
 
-        BukkitMember player = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[0], BukkitMember.class);
+        BukkitAccount player = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[0], BukkitAccount.class);
         if(player == null) {
             sender.sendMessage("§cEsse jogador não se encontra online!");
         } else {

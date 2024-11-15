@@ -10,7 +10,7 @@ import br.com.plutomc.core.bukkit.event.member.PlayerLanguageChangeEvent;
 import br.com.plutomc.core.bukkit.event.server.PlayerChangeEvent;
 import br.com.plutomc.core.bukkit.utils.scoreboard.ScoreHelper;
 import br.com.plutomc.core.bukkit.utils.scoreboard.Scoreboard;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.permission.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,10 +69,10 @@ public class ScoreboardListener implements Listener {
    }
 
    private void handleScoreboard(Player player) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
       Scoreboard scoreboard = new Scoreboard(player, "§b§lPLUTO");
       scoreboard.add(8, "§a");
-      scoreboard.add(7, "§f§%scoreboard-group%§: " + CommonPlugin.getInstance().getPluginInfo().getTagByGroup(member.getServerGroup()).getScore());
+      scoreboard.add(7, "§f§%scoreboard-group%§: " + CommonPlugin.getInstance().getPluginInfo().getTagByGroup(account.getServerGroup()).getScore());
       scoreboard.add(5, "");
       scoreboard.add(4, "§fLobby: §a#" + LobbyMain.getInstance().getLobbyId());
       scoreboard.add(3, "§f§%scoreboard-players%§: §b" + BukkitCommon.getInstance().getServerManager().getTotalMembers());
@@ -82,8 +82,8 @@ public class ScoreboardListener implements Listener {
    }
 
    private void updateScoreboard(Player player) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-      Tag tag = CommonPlugin.getInstance().getPluginInfo().getTagByGroup(member.getServerGroup());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+      Tag tag = CommonPlugin.getInstance().getPluginInfo().getTagByGroup(account.getServerGroup());
       ScoreHelper.getInstance().updateScoreboard(player, 7, "§f§%scoreboard-group%§: " + tag.getScore());
    }
 

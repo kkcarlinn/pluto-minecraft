@@ -1,7 +1,7 @@
 package br.com.plutomc.core.bukkit.utils.scoreboard;
 
 import br.com.plutomc.core.bukkit.utils.player.PlayerHelper;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -58,7 +58,7 @@ public class Scoreboard extends Objective {
    }
 
    public void add(int index, String text) {
-      text = PlayerHelper.translate(Member.getLanguage(this.player.getUniqueId()), text);
+      text = PlayerHelper.translate(Account.getLanguage(this.player.getUniqueId()), text);
       Team team = this.getScoreboard().getTeam("score-" + index);
       String prefix = "";
       String suffix = "";

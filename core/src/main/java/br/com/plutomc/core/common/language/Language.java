@@ -5,7 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 
 public enum Language {
    PORTUGUESE("Português", "pt-br", "portugues", "br", "brasileiro"),
@@ -31,8 +31,8 @@ public enum Language {
    }
 
    public static Language getLanguage(UUID uniqueId) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(uniqueId);
-      return member == null ? CommonPlugin.getInstance().getPluginInfo().getDefaultLanguage() : member.getLanguage();
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(uniqueId);
+      return account == null ? CommonPlugin.getInstance().getPluginInfo().getDefaultLanguage() : account.getLanguage();
    }
 
    public Locale getLocale() {

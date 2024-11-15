@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
@@ -132,7 +132,7 @@ public class ServerCommand implements CommandClass {
       console = false
    )
    public void statsCommand(CommandArgs cmdArgs) {
-      new StatisticsInventory(cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer(), null);
+      new StatisticsInventory(cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer(), null);
    }
 
    @CommandFramework.Command(
@@ -212,7 +212,7 @@ public class ServerCommand implements CommandClass {
          if (gameMode == null) {
             sender.sendMessage(language.t("command-gamemode-not-found", "%gamemode%", args[0]));
          } else {
-            Player target = args.length == 1 && sender.isPlayer() ? cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer() : Bukkit.getPlayer(args[1]);
+            Player target = args.length == 1 && sender.isPlayer() ? cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer() : Bukkit.getPlayer(args[1]);
             if (target == null) {
                sender.sendMessage(language.t("player-not-found", "%player%", args[1]));
             } else {
@@ -240,7 +240,7 @@ public class ServerCommand implements CommandClass {
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          if (cmdArgs.isPlayer()) {
-            Player player = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+            Player player = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
             player.getInventory().clear();
             player.getInventory().setArmorContents(new ItemStack[4]);
             player.getActivePotionEffects().clear();
@@ -268,7 +268,7 @@ public class ServerCommand implements CommandClass {
       permission = "command.teleport"
    )
    public void teleportworldCommand(CommandArgs cmdArgs) {
-      Player player = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+      Player player = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
       String[] args = cmdArgs.getArgs();
       World world = Bukkit.getWorld(args[0]);
       if (world == null) {
@@ -295,7 +295,7 @@ public class ServerCommand implements CommandClass {
             }
 
             if (sender.isPlayer()) {
-               cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer().teleport(target);
+               cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer().teleport(target);
                sender.sendMessage(sender.getLanguage().t("command-teleport-teleported-to-target", "%target%", target.getName()));
             } else {
                sender.sendMessage("§%command-only-for-console%§");
@@ -304,7 +304,7 @@ public class ServerCommand implements CommandClass {
          case 2:
             if (args[0].equalsIgnoreCase("location")) {
                if (cmdArgs.isPlayer()) {
-                  Player player = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+                  Player player = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
                   String locationName = args[1];
                   if (BukkitCommon.getInstance().getLocationManager().hasLocation(locationName)) {
                      Location location = BukkitCommon.getInstance().getLocationManager().getLocation(locationName);
@@ -339,7 +339,7 @@ public class ServerCommand implements CommandClass {
             break;
          case 3:
             if (sender.isPlayer()) {
-               player = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+               player = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
                OptionalDouble optionalX = StringFormat.parseDouble(args[0]);
                OptionalDouble optionalY = StringFormat.parseDouble(args[1]);
                OptionalDouble optionalZ = StringFormat.parseDouble(args[2]);
@@ -407,7 +407,7 @@ public class ServerCommand implements CommandClass {
    )
    public void setlocationCommand(CommandArgs cmdArgs) {
       String[] args = cmdArgs.getArgs();
-      BukkitMember member = (BukkitMember)cmdArgs.getSender();
+      BukkitAccount member = (BukkitAccount)cmdArgs.getSender();
       if (args.length == 0) {
          member.sendMessage("§eUse /" + cmdArgs.getLabel() + " <locationName> para salvar a localização.");
       } else {

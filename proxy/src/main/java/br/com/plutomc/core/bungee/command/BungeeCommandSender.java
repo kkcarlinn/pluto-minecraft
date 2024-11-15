@@ -5,8 +5,8 @@ import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.command.CommandSender;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.Profile;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.Profile;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -54,13 +54,13 @@ public class BungeeCommandSender implements CommandSender {
    @Override
    public boolean hasPermission(String permission) {
       return this.sender instanceof ProxiedPlayer
-         ? CommonPlugin.getInstance().getMemberManager().getMember(this.getUniqueId()).hasPermission(permission)
+         ? CommonPlugin.getInstance().getAccountManager().getAccount(this.getUniqueId()).hasPermission(permission)
          : true;
    }
 
    @Override
    public Language getLanguage() {
-      return this.isPlayer() ? ((Member)this.getSender()).getLanguage() : CommonPlugin.getInstance().getPluginInfo().getDefaultLanguage();
+      return this.isPlayer() ? ((Account)this.getSender()).getLanguage() : CommonPlugin.getInstance().getPluginInfo().getDefaultLanguage();
    }
 
    public String translate(Language language, String string) {
@@ -70,8 +70,8 @@ public class BungeeCommandSender implements CommandSender {
    @Override
    public boolean isStaff() {
       if (this.sender instanceof ProxiedPlayer) {
-         Member member = CommonPlugin.getInstance().getMemberManager().getMember(((ProxiedPlayer)this.sender).getUniqueId());
-         return member.getServerGroup().isStaff();
+         Account account = CommonPlugin.getInstance().getAccountManager().getAccount(((ProxiedPlayer)this.sender).getUniqueId());
+         return account.getServerGroup().isStaff();
       } else {
          return true;
       }
@@ -79,7 +79,7 @@ public class BungeeCommandSender implements CommandSender {
 
    @Override
    public boolean isUserBlocked(Profile profile) {
-      return this.isPlayer() ? ((Member)this.getSender()).isUserBlocked(profile) : false;
+      return this.isPlayer() ? ((Account)this.getSender()).isUserBlocked(profile) : false;
    }
 
    public BungeeCommandSender(net.md_5.bungee.api.CommandSender sender) {

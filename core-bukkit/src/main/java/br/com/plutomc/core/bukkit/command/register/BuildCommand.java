@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
@@ -29,7 +29,7 @@ public class BuildCommand implements CommandClass {
       String[] args = cmdArgs.getArgs();
       if (args.length != 0) {
          if (sender.hasPermission("command.build-bypass")) {
-            BukkitMember player = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[0], BukkitMember.class);
+            BukkitAccount player = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[0], BukkitAccount.class);
             if (player == null) {
                sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[0]));
                return;
@@ -47,7 +47,7 @@ public class BuildCommand implements CommandClass {
          if (CommonPlugin.getInstance().getServerType() != ServerType.BUILD && !sender.hasPermission("command.build-bypass")) {
             sender.sendMessage("§cVocê não tem acesso a esse comando neste servidor no momento.");
          } else {
-            BukkitMember player = cmdArgs.getSenderAsMember(BukkitMember.class);
+            BukkitAccount player = cmdArgs.getSenderAsMember(BukkitAccount.class);
             player.setBuildEnabled(!player.isBuildEnabled());
             player.sendMessage("§%command-build-" + (player.isBuildEnabled() ? "enabled" : "disabled") + "%§");
          }
@@ -60,7 +60,7 @@ public class BuildCommand implements CommandClass {
    )
    public void wandCommand(CommandArgs cmdArgs) {
       if (cmdArgs.isPlayer()) {
-         BukkitCommon.getInstance().getBlockManager().giveWand(cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer());
+         BukkitCommon.getInstance().getBlockManager().giveWand(cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer());
          cmdArgs.getSender().sendMessage(" §a* §fVocê recebeu a varinha do §aWorldedit§f!");
       }
    }
@@ -71,7 +71,7 @@ public class BuildCommand implements CommandClass {
    )
    public void setCommand(CommandArgs cmdArgs) {
       if (cmdArgs.isPlayer()) {
-         Player player = ((BukkitMember)cmdArgs.getSender()).getPlayer();
+         Player player = ((BukkitAccount)cmdArgs.getSender()).getPlayer();
          String[] args = cmdArgs.getArgs();
          if (args.length == 0) {
             player.sendMessage(" §eUse §b/set <material:id>§e para setar um bloco.");
@@ -140,7 +140,7 @@ public class BuildCommand implements CommandClass {
    )
    public void undoCommand(CommandArgs cmdArgs) {
       if (cmdArgs.isPlayer()) {
-         Player player = ((BukkitMember)cmdArgs.getSender()).getPlayer();
+         Player player = ((BukkitAccount)cmdArgs.getSender()).getPlayer();
          if (!BukkitCommon.getInstance().getBlockManager().hasUndoList(player)) {
             player.sendMessage("§cVocê não tem nada para desfazer");
          } else {

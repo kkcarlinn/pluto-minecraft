@@ -3,7 +3,7 @@ package br.com.plutomc.core.bukkit.anticheat.commands;
 import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.core.bukkit.anticheat.StormCore;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
@@ -77,7 +77,7 @@ public class StormCommand implements CommandClass {
       if (args.length == 0) {
          sender.sendMessage("§eUse §e/" + cmdArgs.getLabel() + " <player>§e para remover o autoban de um player.");
       } else {
-         BukkitMember member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[0], BukkitMember.class);
+         BukkitAccount member = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[0], BukkitAccount.class);
          if (member == null) {
             sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[0]));
          } else {
@@ -97,7 +97,7 @@ public class StormCommand implements CommandClass {
       if (args.length == 0) {
          sender.sendMessage("§eUse §e/" + cmdArgs.getLabel() + " <player>§e para remover o autoban de um player.");
       } else {
-         BukkitMember member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[0], BukkitMember.class);
+         BukkitAccount member = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[0], BukkitAccount.class);
          if (member == null) {
             sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[0]));
          } else if (!BukkitCommon.getInstance().getStormCore().getBanPlayerMap().containsKey(member.getUniqueId())) {

@@ -10,13 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
 import br.com.plutomc.core.common.command.CommandSender;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.permission.Group;
 import br.com.plutomc.core.common.utils.string.StringFormat;
 import org.bukkit.Bukkit;
@@ -30,14 +30,14 @@ public class ModeradorCommand implements CommandClass {
            permission = "command.punish"
    )
    public void punishinfoCommand(CommandArgs cmdArgs) {
-      BukkitMember sender = cmdArgs.getSenderAsMember(BukkitMember.class);
+      BukkitAccount sender = cmdArgs.getSenderAsMember(BukkitAccount.class);
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <player>§e para ver as punições de um jogador.");
       } else {
-         Member target = CommonPlugin.getInstance().getMemberManager().getMemberByName(cmdArgs.getArgs()[0]);
+         Account target = CommonPlugin.getInstance().getAccountManager().getAccountByName(cmdArgs.getArgs()[0]);
          if (target == null) {
-            target = CommonPlugin.getInstance().getMemberData().loadMember(cmdArgs.getArgs()[0], true);
+            target = CommonPlugin.getInstance().getAccountData().loadAccount(cmdArgs.getArgs()[0], true);
             if (target == null) {
                sender.sendMessage(sender.getLanguage().t("account-doesnt-exist", "%player%", cmdArgs.getArgs()[0]));
                return;
@@ -54,7 +54,7 @@ public class ModeradorCommand implements CommandClass {
       permission = "command.server"
    )
    public void serverlistCommand(CommandArgs cmdArgs) {
-      new ServerListInventory(cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer(), 1);
+      new ServerListInventory(cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer(), 1);
    }
 
    @CommandFramework.Command(
@@ -122,7 +122,7 @@ public class ModeradorCommand implements CommandClass {
          if (player == null) {
             sender.sendMessage(sender.getLanguage().t("player-is-not-online", "%player%", args[0]));
          } else {
-            cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer().openInventory(player.getInventory());
+            cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer().openInventory(player.getInventory());
             this.staffLog("O " + sender.getName() + " abriu o inventário de " + player.getName());
          }
       }
@@ -153,7 +153,7 @@ public class ModeradorCommand implements CommandClass {
       permission = "command.admin"
    )
    public void adminCommand(CommandArgs cmdArgs) {
-      Player player = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+      Player player = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
 
          if (BukkitCommon.getInstance().getVanishManager().isPlayerInAdmin(player)) {
             BukkitCommon.getInstance().getVanishManager().setPlayer(player);
@@ -172,7 +172,7 @@ public class ModeradorCommand implements CommandClass {
            permission = "command.admin"
    )
    public void adminPrefs(CommandArgs cmdArgs) {
-      Player player = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+      Player player = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
       new AdminInventory(player, 0L);
    }
 
@@ -183,7 +183,7 @@ public class ModeradorCommand implements CommandClass {
       console = false
    )
    public void vanishCommand(CommandArgs cmdArgs) {
-      Player player = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+      Player player = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
       String[] args = cmdArgs.getArgs();
       Group hidePlayer;
       if (args.length == 0) {

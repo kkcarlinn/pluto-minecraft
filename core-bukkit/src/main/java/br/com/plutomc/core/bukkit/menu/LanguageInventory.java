@@ -7,7 +7,7 @@ import br.com.plutomc.core.bukkit.utils.menu.click.ClickType;
 import br.com.plutomc.core.bukkit.utils.menu.click.MenuClickHandler;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class LanguageInventory {
    public LanguageInventory(final Player player) {
-      final Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      final Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
       MenuInventory menuInventory = new MenuInventory("§7§%inventory-language%§", 3);
 
       for(int i = 1; i <= Language.values().length; ++i) {
@@ -32,18 +32,18 @@ public class LanguageInventory {
                      + "\n\n§e"
                      + language.t("inventory-language-click-to-change")
                );
-            if (member.getLanguage() == language) {
+            if (account.getLanguage() == language) {
                itemBuilder.glow();
             }
 
             menuInventory.setItem(9 + i, itemBuilder.build(), new MenuClickHandler() {
                @Override
                public void onClick(Player p, Inventory inv, ClickType type, ItemStack stack, int slot) {
-                  if (member.getLanguage() == language) {
+                  if (account.getLanguage() == language) {
                      player.sendMessage(language.t("inventory-language-already", "%language%", language.getLanguageName()));
                   } else {
-                     member.setLanguage(language);
-                     member.sendMessage(language.t("inventory-language-changed", "%language%", language.getLanguageName()));
+                     account.setLanguage(language);
+                     account.sendMessage(language.t("inventory-language-changed", "%language%", language.getLanguageName()));
                      new LanguageInventory(player);
                   }
                }

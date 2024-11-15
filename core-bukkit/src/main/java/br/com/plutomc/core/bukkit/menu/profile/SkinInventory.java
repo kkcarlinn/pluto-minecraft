@@ -10,7 +10,7 @@ import br.com.plutomc.core.bukkit.utils.menu.MenuItem;
 import br.com.plutomc.core.bukkit.utils.player.PlayerAPI;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.packet.types.skin.SkinChange;
 import br.com.plutomc.core.common.utils.skin.Skin;
 import org.bukkit.Material;
@@ -29,17 +29,17 @@ public class SkinInventory {
    }
 
    public SkinInventory(Player player, InventoryType type, int page) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
       MenuInventory menuInventory = new MenuInventory("§7Catálogo de skins", 5);
       if (type == InventoryType.PRINCIPAL) {
          menuInventory.setItem(
             13,
             new ItemBuilder()
-               .name("§a" + member.getSkin().getPlayerName())
+               .name("§a" + account.getSkin().getPlayerName())
                .type(Material.SKULL_ITEM)
-               .lore("", "§7Fonte: §a" + (member.isCustomSkin() ? "Customizada" : "Padrão"))
+               .lore("", "§7Fonte: §a" + (account.isCustomSkin() ? "Customizada" : "Padrão"))
                .durability(3)
-               .skin(member.getPlayerName())
+               .skin(account.getPlayerName())
                .build()
          );
          menuInventory.setItem(
@@ -82,8 +82,8 @@ public class SkinInventory {
             items.add(new MenuItem(itemBuilder.build(), (p, inv, t, stack, slot) -> {
                player.closeInventory();
                PlayerAPI.changePlayerSkin(player, skinModel.getSkin().getValue(), skinModel.getSkin().getSignature(), true);
-               member.setSkin(skinModel.getSkin(), true);
-               CommonPlugin.getInstance().getServerData().sendPacket(new SkinChange(p.getUniqueId(), member.getSkin()));
+               account.setSkin(skinModel.getSkin(), true);
+               CommonPlugin.getInstance().getServerData().sendPacket(new SkinChange(p.getUniqueId(), account.getSkin()));
             }));
          }
 

@@ -1,7 +1,7 @@
 package br.com.plutomc.core.bungee.command.register;
 
 import br.com.plutomc.core.bungee.BungeeMain;
-import br.com.plutomc.core.bungee.member.BungeeMember;
+import br.com.plutomc.core.bungee.account.BungeeAccount;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.command.CommandArgs;
@@ -9,7 +9,7 @@ import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
 import br.com.plutomc.core.common.command.CommandSender;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.server.ServerType;
 import br.com.plutomc.core.common.server.loadbalancer.server.ProxiedServer;
 import br.com.plutomc.core.common.utils.DateUtils;
@@ -35,9 +35,9 @@ public class ModeradorCommand implements CommandClass {
       permission = "command.fakelist"
    )
    public void fakelistCommand(CommandArgs cmdArgs) {
-      List<Member> list = CommonPlugin.getInstance()
-         .getMemberManager()
-         .getMembers()
+      List<Account> list = CommonPlugin.getInstance()
+         .getAccountManager()
+         .getAccounts()
          .stream()
          .filter(member -> member.isUsingFake())
          .collect(Collectors.toList());
@@ -214,9 +214,9 @@ public class ModeradorCommand implements CommandClass {
       console = false
    )
    public void staffChatCommand(CommandArgs cmdArgs) {
-      Member member = cmdArgs.getSenderAsMember();
-      member.getMemberConfiguration().setStaffChat(!member.getMemberConfiguration().isStaffChat());
-      member.sendMessage("§%command.staffchat." + (member.getMemberConfiguration().isStaffChat() ? "enabled" : "disabled") + "%§");
+      Account account = cmdArgs.getSenderAsMember();
+      account.getAccountConfiguration().setStaffChat(!account.getAccountConfiguration().isStaffChat());
+      account.sendMessage("§%command.staffchat." + (account.getAccountConfiguration().isStaffChat() ? "enabled" : "disabled") + "%§");
    }
 
    @CommandFramework.Command(
@@ -231,15 +231,15 @@ public class ModeradorCommand implements CommandClass {
       int ping = 0;
       long time = 0L;
       Map<ProtocolVersion, Integer> map = new HashMap<>();
-      BungeeMember[] array = CommonPlugin.getInstance()
-         .getMemberManager()
-         .getMembers(BungeeMember.class)
+      BungeeAccount[] array = CommonPlugin.getInstance()
+         .getAccountManager()
+         .getAccounts(BungeeAccount.class)
          .stream()
          .sorted((o1, o2) -> (o1.getServerGroup().getId() - o2.getServerGroup().getId()) * -1)
          .filter(memberx -> memberx.getServerGroup().isStaff() && groupId >= memberx.getServerGroup().getId())
-         .toArray(x$0 -> new BungeeMember[x$0]);
+         .toArray(x$0 -> new BungeeAccount[x$0]);
 
-      for(BungeeMember member : array) {
+      for(BungeeAccount member : array) {
          ping += member.getProxiedPlayer().getPing();
          time += member.getSessionTime();
          ProtocolVersion version = ProtocolVersion.getById(member.getProxiedPlayer().getPendingConnection().getVersion());
@@ -256,7 +256,7 @@ public class ModeradorCommand implements CommandClass {
       MessageBuilder messageBuilder = new MessageBuilder("    §aPlayers: §7");
 
       for(int i = 0; i < array.length; ++i) {
-         BungeeMember member = array[i];
+         BungeeAccount member = array[i];
          messageBuilder.extra(
             new MessageBuilder("§7" + member.getDefaultTag().getRealPrefix() + member.getPlayerName() + (i == array.length - 1 ? "." : ", "))
                .setHoverEvent(
@@ -445,7 +445,7 @@ public class ModeradorCommand implements CommandClass {
          if (target == null) {
             sender.sendMessage(sender.getLanguage().t("player-not-found", "%player%", playerName));
          } else {
-            cmdArgs.getSenderAsMember(BungeeMember.class).getProxiedPlayer().connect(target.getServer().getInfo());
+            cmdArgs.getSenderAsMember(BungeeAccount.class).getProxiedPlayer().connect(target.getServer().getInfo());
          }
       }
    }
@@ -493,7 +493,7 @@ public class ModeradorCommand implements CommandClass {
                return;
             }
 
-            playerList.addAll(cmdArgs.getSenderAsMember(BungeeMember.class).getProxiedPlayer().getServer().getInfo().getPlayers());
+            playerList.addAll(cmdArgs.getSenderAsMember(BungeeAccount.class).getProxiedPlayer().getServer().getInfo().getPlayers());
          } else if (args[0].contains(",")) {
             String[] split = args[0].split(",");
 

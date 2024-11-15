@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import br.com.plutomc.lobby.lobbyhost.wadgets.Particles;
 import br.com.plutomc.lobby.lobbyhost.wadgets.Wings;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -18,9 +18,9 @@ public class Gamer {
    private Wings wing;
    private double alpha = 0.0;
 
-   public Gamer(Member member) {
-      this.name = member.getName();
-      this.uniqueId = member.getUniqueId();
+   public Gamer(Account account) {
+      this.name = account.getName();
+      this.uniqueId = account.getUniqueId();
    }
 
    public Player getPlayer() {

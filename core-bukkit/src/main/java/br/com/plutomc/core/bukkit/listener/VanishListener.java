@@ -4,7 +4,7 @@ import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.core.bukkit.event.player.PlayerAdminEvent;
 import br.com.plutomc.core.bukkit.event.player.PlayerShowToPlayerEvent;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,8 +42,8 @@ public class VanishListener implements Listener {
    )
    public void onPlayerJoin(PlayerJoinEvent event) {
       Player player = event.getPlayer();
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-      if (player.hasPermission("command.admin") && member.getMemberConfiguration().isAdminOnJoin()) {
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+      if (player.hasPermission("command.admin") && account.getAccountConfiguration().isAdminOnJoin()) {
          BukkitCommon.getInstance().getVanishManager().setPlayerInAdmin(player);
       }
    }
@@ -67,9 +67,9 @@ public class VanishListener implements Listener {
    @EventHandler
    public void onPlayerAdmin(PlayerAdminEvent event) {
       CommonPlugin.getInstance()
-         .getMemberManager()
-         .getMember(event.getPlayer().getUniqueId())
-         .getMemberConfiguration()
+         .getAccountManager()
+         .getAccount(event.getPlayer().getUniqueId())
+         .getAccountConfiguration()
          .setAdminMode(event.getAdminMode() == PlayerAdminEvent.AdminMode.ADMIN);
    }
 

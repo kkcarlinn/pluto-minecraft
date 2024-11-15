@@ -11,8 +11,8 @@ import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
 import br.com.plutomc.core.common.medal.Medal;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.Profile;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.Profile;
 import br.com.plutomc.core.common.punish.Punish;
 import br.com.plutomc.core.common.punish.PunishType;
 import br.com.plutomc.core.common.utils.DateUtils;
@@ -78,19 +78,19 @@ public class ChatListener implements Listener {
    )
    public void onAsyncPlayerChatL(AsyncPlayerChatEvent event) {
       Player player = event.getPlayer();
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
-      if (member == null) {
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
+      if (account == null) {
          event.setCancelled(true);
       } else {
-         Punish punish = member.getPunishConfiguration().getActualPunish(PunishType.MUTE);
+         Punish punish = account.getPunishConfiguration().getActualPunish(PunishType.MUTE);
          if (punish != null) {
-            member.sendMessage(
-                    new MessageBuilder(punish.getMuteMessage(member.getLanguage()))
+            account.sendMessage(
+                    new MessageBuilder(punish.getMuteMessage(account.getLanguage()))
                             .setHoverEvent(
                                     "§fPunido em: §7"
                                             + CommonConst.DATE_FORMAT.format(punish.getCreatedAt())
                                             + "\n§fExpire em: §7"
-                                            + (punish.isPermanent() ? "§cnunca" : DateUtils.formatDifference(member.getLanguage(), punish.getExpireAt() / 1000L))
+                                            + (punish.isPermanent() ? "§cnunca" : DateUtils.formatDifference(account.getLanguage(), punish.getExpireAt() / 1000L))
                             )
                             .create()
             );
@@ -101,33 +101,33 @@ public class ChatListener implements Listener {
                default:
                   break;
                case DISABLED:
-                  if (!member.hasPermission("chat.disabled-say")) {
-                     member.sendMessage("§cVocê não pode falar no chat no momento, somente membros da equipe.");
+                  if (!account.hasPermission("chat.disabled-say")) {
+                     account.sendMessage("§cVocê não pode falar no chat no momento, somente membros da equipe.");
                      event.setCancelled(true);
                      return;
                   }
                   break;
                case YOUTUBER:
-                  if (!member.hasPermission("chat.youtuber-say")) {
-                     member.sendMessage("§cVocê não pode falar no chat no momento, somente celebridades do servidor.");
+                  if (!account.hasPermission("chat.youtuber-say")) {
+                     account.sendMessage("§cVocê não pode falar no chat no momento, somente celebridades do servidor.");
                      event.setCancelled(true);
                      return;
                   }
                   break;
                case PAYMENT:
-                  if (!member.hasPermission("chat.payment-say")) {
-                     member.sendMessage("§cVocê não pode falar no chat no momento, somente jogadores pagantes.");
+                  if (!account.hasPermission("chat.payment-say")) {
+                     account.sendMessage("§cVocê não pode falar no chat no momento, somente jogadores pagantes.");
                      event.setCancelled(true);
                      return;
                   }
             }
 
-            if (member.hasCooldown("chat-cooldown") && !member.hasPermission("command.admin")) {
-               member.sendActionBar("§cVocê precisa esperar " + member.getCooldownFormatted("chat-cooldown") + " para falar no chat novamente.");
+            if (account.hasCooldown("chat-cooldown") && !account.hasPermission("command.admin")) {
+               account.sendActionBar("§cVocê precisa esperar " + account.getCooldownFormatted("chat-cooldown") + " para falar no chat novamente.");
                event.setCancelled(true);
             } else {
-               member.putCooldown("chat-cooldown", 3.5);
-               if (!member.hasPermission("command.admin")) {
+               account.putCooldown("chat-cooldown", 3.5);
+               if (!account.hasPermission("command.admin")) {
                   for(String string : event.getMessage().split(" ")) {
                      if (BukkitConst.SWEAR_WORDS.contains(string.toLowerCase())) {
                         StringBuilder stringBuilder = new StringBuilder();
@@ -152,10 +152,10 @@ public class ChatListener implements Listener {
    public void onAsyncPlayerChatN(AsyncPlayerChatEvent event) {
       event.setCancelled(true);
       Player player = event.getPlayer();
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
       String message = event.getMessage();
       MessageBuilder messageBuilder = new MessageBuilder("");
-      Medal medal = member.getMedal();
+      Medal medal = account.getMedal();
       if (medal != null) {
          messageBuilder.extra(
                  new MessageBuilder(medal.getChatColor() + medal.getSymbol() + " ")
@@ -165,14 +165,14 @@ public class ChatListener implements Listener {
       }
 
       messageBuilder.extra(
-              new MessageBuilder(member.getTag().getRealPrefix() + player.getName())
+              new MessageBuilder(account.getTag().getRealPrefix() + player.getName())
                       .setHoverEvent(
                               "§a"
                                       + player.getName()
                                       + "\n\n§fMedalha: "
                                       + (medal == null ? "§7Nenhuma" : medal.getChatColor() + medal.getSymbol())
                                       + "\n§fTempo de sessão atual: §7"
-                                      + DateUtils.formatDifference(member.getLanguage(), member.getSessionTime() / 1000L)
+                                      + DateUtils.formatDifference(account.getLanguage(), account.getSessionTime() / 1000L)
                                       + "\n\n§eMensagem enviada às "
                                       + CommonConst.TIME_FORMAT.format(System.currentTimeMillis())
                                       + "."
@@ -190,8 +190,8 @@ public class ChatListener implements Listener {
             messageBuilder.extra(new MessageBuilder(msg).create());
          } else {
             String url = links.stream().findFirst().orElse(null).toLowerCase();
-            if (!url.contains("you") && !url.contains("twitch") && !member.hasPermission("command.admin")) {
-               member.sendMessage("§cNão é permitido enviar links.");
+            if (!url.contains("you") && !url.contains("twitch") && !account.hasPermission("command.admin")) {
+               account.sendMessage("§cNão é permitido enviar links.");
                event.setCancelled(true);
                return;
             }
@@ -209,17 +209,17 @@ public class ChatListener implements Listener {
 
       TextComponent textComponent = messageBuilder.create();
       event.getRecipients().removeIf(recipient -> {
-         Member memberRecipient = CommonPlugin.getInstance().getMemberManager().getMember(recipient.getUniqueId());
-         if (memberRecipient == null || memberRecipient.getUniqueId().equals(member.getUniqueId())) {
+         Account accountRecipient = CommonPlugin.getInstance().getAccountManager().getAccount(recipient.getUniqueId());
+         if (accountRecipient == null || accountRecipient.getUniqueId().equals(account.getUniqueId())) {
             return false;
-         } else if (!memberRecipient.getMemberConfiguration().isSeeingChat() && !member.hasPermission("staff.seechat-ignore")) {
+         } else if (!accountRecipient.getAccountConfiguration().isSeeingChat() && !account.hasPermission("staff.seechat-ignore")) {
             return true;
          } else {
-            return memberRecipient.isUserBlocked(Profile.from(member)) && !member.hasPermission("staff.seechat-ignore");
+            return accountRecipient.isUserBlocked(Profile.from(account)) && !account.hasPermission("staff.seechat-ignore");
          }
       });
       event.getRecipients().forEach(recipient -> recipient.spigot().sendMessage(textComponent));
-      Bukkit.getConsoleSender().sendMessage(member.getPlayerName() + ": " + message);
+      Bukkit.getConsoleSender().sendMessage(account.getPlayerName() + ": " + message);
    }
 
    @EventHandler

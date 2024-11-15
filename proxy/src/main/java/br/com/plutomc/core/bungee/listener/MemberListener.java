@@ -5,13 +5,13 @@ import br.com.plutomc.core.bungee.BungeeMain;
 import br.com.plutomc.core.bungee.event.player.PlayerFieldUpdateEvent;
 import br.com.plutomc.core.bungee.event.player.PlayerPardonedEvent;
 import br.com.plutomc.core.bungee.event.player.PlayerPunishEvent;
-import br.com.plutomc.core.bungee.member.BungeeMember;
+import br.com.plutomc.core.bungee.account.BungeeAccount;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.PluginInfo;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.configuration.LoginConfiguration;
-import br.com.plutomc.core.common.member.party.Party;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.configuration.LoginConfiguration;
+import br.com.plutomc.core.common.account.party.Party;
 import br.com.plutomc.core.common.permission.Group;
 import br.com.plutomc.core.common.punish.Punish;
 import br.com.plutomc.core.common.punish.PunishType;
@@ -64,12 +64,12 @@ public class MemberListener implements Listener {
    private void handleMemberLoad(LoginEvent event) {
       String playerName = event.getConnection().getName();
       UUID uniqueId = event.getConnection().getUniqueId();
-      BungeeMember member = CommonPlugin.getInstance().getMemberData().loadMember(uniqueId, BungeeMember.class);
+      BungeeAccount member = CommonPlugin.getInstance().getAccountData().loadAccount(uniqueId, BungeeAccount.class);
       if (member == null) {
          LoginConfiguration.AccountType accountType = event.getConnection().isOnlineMode()
                  ? LoginConfiguration.AccountType.PREMIUM
                  : LoginConfiguration.AccountType.CRACKED;
-         BungeeMember memberByName = CommonPlugin.getInstance().getMemberData().loadMember(playerName, true, BungeeMember.class);
+         BungeeAccount memberByName = CommonPlugin.getInstance().getAccountData().loadAccount(playerName, true, BungeeAccount.class);
          if (accountType == LoginConfiguration.AccountType.PREMIUM
                  && memberByName != null
                  && memberByName.getLoginConfiguration().getAccountType() == LoginConfiguration.AccountType.CRACKED) {
@@ -102,8 +102,8 @@ public class MemberListener implements Listener {
                }
             }
 
-            member = new BungeeMember(uniqueId, playerName, accountType);
-            CommonPlugin.getInstance().getMemberData().createMember(member);
+            member = new BungeeAccount(uniqueId, playerName, accountType);
+            CommonPlugin.getInstance().getAccountData().createMember(member);
             CommonPlugin.getInstance().debug("The member " + member.getPlayerName() + "(" + member.getUniqueId() + ") has been created.");
          }
       } else if (member.getLoginConfiguration().getAccountType() == LoginConfiguration.AccountType.NONE) {
@@ -141,10 +141,10 @@ public class MemberListener implements Listener {
             if (!this.handleTimeout(member, event)) {
                if (!this.handleWhiteList(member, event)) {
                   if (!event.isCancelled()) {
-                     CommonPlugin.getInstance().getMemberManager().loadMember(member);
+                     CommonPlugin.getInstance().getAccountManager().loadAccount(member);
                      this.handleParty(member, event);
-                     if (!CommonPlugin.getInstance().getMemberData().checkCache(member.getUniqueId())) {
-                        CommonPlugin.getInstance().getMemberData().saveRedisMember(member);
+                     if (!CommonPlugin.getInstance().getAccountData().checkCache(member.getUniqueId())) {
+                        CommonPlugin.getInstance().getAccountData().saveRedisMember(member);
                      }
 
                      Report report = CommonPlugin.getInstance().getReportManager().getReportById(member.getUniqueId());
@@ -162,7 +162,7 @@ public class MemberListener implements Listener {
 
    @EventHandler
    public void onPostLogin(PostLoginEvent event) {
-      BungeeMember member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BungeeMember.class);
+      BungeeAccount member = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BungeeAccount.class);
       if (member == null) {
          event.getPlayer().disconnect(CommonPlugin.getInstance().getPluginInfo().translate("account-not-loaded"));
       } else {
@@ -174,8 +174,8 @@ public class MemberListener implements Listener {
    @EventHandler
    public void onPlayerPunish(PlayerPunishEvent event) {
       if (event.getPunish().getPunishType() == PunishType.BAN && !event.getPunish().getPlayerName().equals("CONSOLE") && event.getPunish().isPermanent()) {
-         Member member = event.getPunished();
-         this.banIp(member.getLastIpAddress(), event.getPunish());
+         Account account = event.getPunished();
+         this.banIp(account.getLastIpAddress(), event.getPunish());
       }
    }
 
@@ -186,7 +186,7 @@ public class MemberListener implements Listener {
       }
    }
 
-   public void handlePermissions(BungeeMember member) {
+   public void handlePermissions(BungeeAccount member) {
       ProxiedPlayer player = member.getProxiedPlayer();
 
       for(String permission : ImmutableList.copyOf(player.getPermissions())) {
@@ -219,11 +219,11 @@ public class MemberListener implements Listener {
    public void onPermissionCheck(PermissionCheckEvent event) {
       if (event.getSender() instanceof ProxiedPlayer && !event.hasPermission()) {
          CommandSender sender = event.getSender();
-         Member member = CommonPlugin.getInstance().getMemberManager().getMember(((ProxiedPlayer)sender).getUniqueId());
-         if (member != null) {
+         Account account = CommonPlugin.getInstance().getAccountManager().getAccount(((ProxiedPlayer)sender).getUniqueId());
+         if (account != null) {
             String permission = sender.getPermissions().stream().filter(string -> string.equals("*")).findFirst().orElse(null);
             if (permission == null) {
-               event.setHasPermission(member.hasSilentPermission(event.getPermission()));
+               event.setHasPermission(account.hasSilentPermission(event.getPermission()));
             } else {
                event.setHasPermission(true);
             }
@@ -233,20 +233,20 @@ public class MemberListener implements Listener {
 
    @EventHandler
    public void onPlayerDisconnect(PlayerDisconnectEvent event) {
-      BungeeMember member = CommonPlugin.getInstance().getMemberManager().getMember(event.getPlayer().getUniqueId(), BungeeMember.class);
+      BungeeAccount member = CommonPlugin.getInstance().getAccountManager().getAccount(event.getPlayer().getUniqueId(), BungeeAccount.class);
       if (member != null) {
          member.getLoginConfiguration().logOut();
          member.logOut();
-         CommonPlugin.getInstance().getMemberManager().unloadMember(member);
+         CommonPlugin.getInstance().getAccountManager().unloadAccount(member);
          CommonPlugin.getInstance()
-                 .getMemberData()
+                 .getAccountData()
                  .cacheConnection(
                          event.getPlayer().getPendingConnection().getName(), member.getLoginConfiguration().getAccountType() == LoginConfiguration.AccountType.PREMIUM
                  );
-         CommonPlugin.getInstance().getMemberData().cacheMember(member.getUniqueId());
+         CommonPlugin.getInstance().getAccountData().cacheMember(member.getUniqueId());
          Party party = member.getParty();
          if (party != null
-                 && !party.getMembers().stream().filter(id -> CommonPlugin.getInstance().getMemberManager().getMember(id) != null).findFirst().isPresent()) {
+                 && !party.getMembers().stream().filter(id -> CommonPlugin.getInstance().getAccountManager().getAccount(id) != null).findFirst().isPresent()) {
             member.setPartyId(null);
             CommonPlugin.getInstance().getPartyData().deleteParty(party);
             CommonPlugin.getInstance().getPartyManager().unloadParty(party.getPartyId());
@@ -269,7 +269,7 @@ public class MemberListener implements Listener {
       return this.banCache.asMap().containsKey(ipAddress);
    }
 
-   private boolean handleParty(BungeeMember member, LoginEvent event) {
+   private boolean handleParty(BungeeAccount member, LoginEvent event) {
       Party party = member.getParty();
       if (party != null) {
          return true;
@@ -282,7 +282,7 @@ public class MemberListener implements Listener {
       }
    }
 
-   private boolean handleTimeout(BungeeMember member, LoginEvent event) {
+   private boolean handleTimeout(BungeeAccount member, LoginEvent event) {
       if (member.getLoginConfiguration().isTimeouted()) {
          event.setCancelled(true);
          event.setCancelReason(
@@ -301,7 +301,7 @@ public class MemberListener implements Listener {
       }
    }
 
-   private boolean handlePunish(BungeeMember member, LoginEvent event) {
+   private boolean handlePunish(BungeeAccount member, LoginEvent event) {
       Punish punish = member.getPunishConfiguration().getActualPunish(PunishType.BAN);
       if (punish != null) {
          event.setCancelled(true);
@@ -358,7 +358,7 @@ public class MemberListener implements Listener {
       }
    }
 
-   private boolean handleLogin(BungeeMember member, LoginEvent event) {
+   private boolean handleLogin(BungeeAccount member, LoginEvent event) {
       SocketAddress socket = event.getConnection().getSocketAddress();
       if (!(socket instanceof InetSocketAddress)) {
          event.setCancelled(true);
@@ -381,7 +381,7 @@ public class MemberListener implements Listener {
       }
    }
 
-   private boolean handleWhiteList(BungeeMember bungeeMember, LoginEvent loginEvent) {
+   private boolean handleWhiteList(BungeeAccount bungeeMember, LoginEvent loginEvent) {
       if (BungeeMain.getInstance().isMaintenance()
               && !bungeeMember.hasPermission("command.admin")
               && !BungeeMain.getInstance().isMemberInWhiteList(bungeeMember.getPlayerName())) {

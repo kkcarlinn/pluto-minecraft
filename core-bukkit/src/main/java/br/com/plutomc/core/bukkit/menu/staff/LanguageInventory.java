@@ -7,7 +7,7 @@ import br.com.plutomc.core.bukkit.utils.menu.click.ClickType;
 import br.com.plutomc.core.bukkit.utils.menu.click.MenuClickHandler;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class LanguageInventory {
    public LanguageInventory(final Player player) {
-      Member member = CommonPlugin.getInstance().getMemberManager().getMember(player.getUniqueId());
+      Account account = CommonPlugin.getInstance().getAccountManager().getAccount(player.getUniqueId());
       MenuInventory menuInventory = new MenuInventory("§7§%staff.inventory-language%§", 3);
 
       for(int i = 1; i <= Language.values().length; ++i) {
@@ -29,9 +29,9 @@ public class LanguageInventory {
                .name("§a" + language.getLanguageName())
                .lore(
                   "§7"
-                     + member.getLanguage().t("staff.inventory-language-" + language.name().toLowerCase() + "-description")
+                     + account.getLanguage().t("staff.inventory-language-" + language.name().toLowerCase() + "-description")
                      + "\n\n§e"
-                     + member.getLanguage().t("staff.inventory-language-click-to-modify")
+                     + account.getLanguage().t("staff.inventory-language-click-to-modify")
                )
                .build(),
             new MenuClickHandler() {

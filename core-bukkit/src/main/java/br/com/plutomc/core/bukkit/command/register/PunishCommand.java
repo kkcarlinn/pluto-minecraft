@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
-import br.com.plutomc.core.common.member.Member;
-import br.com.plutomc.core.common.member.configuration.MemberConfiguration;
+import br.com.plutomc.core.common.account.Account;
+import br.com.plutomc.core.common.account.configuration.AccountConfiguration;
 import br.com.plutomc.core.common.punish.PunishType;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -36,10 +36,10 @@ public class PunishCommand implements CommandClass {
       console = false
    )
    public void anticheatCommand(CommandArgs cmdArgs) {
-      Member member = cmdArgs.getSenderAsMember(Member.class);
-      member.getMemberConfiguration()
-         .setCheatState(member.getMemberConfiguration().isAnticheatEnabled() ? MemberConfiguration.CheatState.DISABLED : MemberConfiguration.CheatState.ENABLED);
-      member.sendMessage(member.getLanguage().t("command.anticheat.state-" + member.getMemberConfiguration().getCheatState().name().toLowerCase()));
+      Account account = cmdArgs.getSenderAsMember(Account.class);
+      account.getAccountConfiguration()
+         .setCheatState(account.getAccountConfiguration().isAnticheatEnabled() ? AccountConfiguration.CheatState.DISABLED : AccountConfiguration.CheatState.ENABLED);
+      account.sendMessage(account.getLanguage().t("command.anticheat.state-" + account.getAccountConfiguration().getCheatState().name().toLowerCase()));
    }
 
    @CommandFramework.Completer(

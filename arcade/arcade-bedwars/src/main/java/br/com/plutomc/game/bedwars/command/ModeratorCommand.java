@@ -15,7 +15,7 @@ import br.com.plutomc.game.bedwars.menu.creator.IslandCreatorInventory;
 import br.com.plutomc.core.bukkit.command.BukkitCommandArgs;
 import br.com.plutomc.game.bedwars.island.Island;
 import br.com.plutomc.game.bedwars.island.IslandColor;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.bukkit.utils.Location;
 import br.com.plutomc.core.bukkit.utils.item.ActionItemStack;
 import br.com.plutomc.core.bukkit.utils.item.ItemBuilder;
@@ -72,7 +72,7 @@ public class ModeratorCommand implements CommandClass {
    )
    public void islandCommand(CommandArgs cmdArgs) {
       CommandSender sender = cmdArgs.getSender();
-      Player player = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+      Player player = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          sender.sendMessage("§%command-island-usage%§");
@@ -275,7 +275,7 @@ public class ModeratorCommand implements CommandClass {
    )
    public void generatorCommand(CommandArgs cmdArgs) {
       CommandSender sender = cmdArgs.getSender();
-      Player player = cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer();
+      Player player = cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          this.handleGeneratorUsage(sender);

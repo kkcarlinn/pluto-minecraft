@@ -4,7 +4,7 @@ import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.permission.Tag;
 import br.com.plutomc.core.common.utils.string.MessageBuilder;
 import net.md_5.bungee.api.ProxyServer;
@@ -15,7 +15,7 @@ public class MediaCommand implements CommandClass {
       name = "youtube"
    )
    public void youtubeCommand(CommandArgs cmdArgs) {
-      Member sender = cmdArgs.getSenderAsMember();
+      Account sender = cmdArgs.getSenderAsMember();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <youtube>§e para alterar seu link do youtube.");
@@ -30,7 +30,7 @@ public class MediaCommand implements CommandClass {
       name = "twitch"
    )
    public void twitchCommand(CommandArgs cmdArgs) {
-      Member sender = cmdArgs.getSenderAsMember();
+      Account sender = cmdArgs.getSenderAsMember();
       String[] args = cmdArgs.getArgs();
       if (args.length == 0) {
          sender.sendMessage("§eUse §b/" + cmdArgs.getLabel() + " <twitch>§e para alterar seu link da twitch.");
@@ -50,7 +50,7 @@ public class MediaCommand implements CommandClass {
       permission = "command.stream"
    )
    public void streamCommand(CommandArgs cmdArgs) {
-      Member sender = cmdArgs.getSenderAsMember();
+      Account sender = cmdArgs.getSenderAsMember();
       if (sender.hasTwitch()) {
          if (sender.hasCooldown("command-stream") && !sender.hasPermission("staff.super")) {
             sender.sendMessage("§cVocê precisa esperar " + sender.getCooldownFormatted("command-stream") + " para usar esse comando novamente.");
@@ -86,7 +86,7 @@ public class MediaCommand implements CommandClass {
       permission = "command.record"
    )
    public void recordCommand(CommandArgs cmdArgs) {
-      Member sender = cmdArgs.getSenderAsMember();
+      Account sender = cmdArgs.getSenderAsMember();
       if (sender.hasCooldown("command-stream") && !sender.hasPermission("staff.super")) {
          sender.sendMessage("§cVocê precisa esperar " + sender.getCooldownFormatted("command-stream") + " para usar esse comando novamente.");
       } else {

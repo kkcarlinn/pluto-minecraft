@@ -51,14 +51,14 @@ public class Stafflog extends Packet {
    public void receive() {
       if (this.anticheat) {
          CommonPlugin.getInstance()
-            .getMemberManager()
-            .getMembers()
+            .getAccountManager()
+            .getAccounts()
             .stream()
-            .filter(member -> member.isStaff() && member.getMemberConfiguration().isAnticheatImportant())
+            .filter(member -> member.isStaff() && member.getAccountConfiguration().isAnticheatImportant())
             .forEach(member -> member.sendMessage(new MessageBuilder(this.message).setHoverEvent(this.hoverMessage).setClickEvent(this.clickMessage).create()));
       } else {
          CommonPlugin.getInstance()
-            .getMemberManager()
+            .getAccountManager()
             .staffLog(new MessageBuilder(this.message).setHoverEvent(this.hoverMessage).setClickEvent(this.clickMessage).create());
       }
    }

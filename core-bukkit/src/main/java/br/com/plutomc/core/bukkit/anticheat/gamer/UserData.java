@@ -58,10 +58,10 @@ public class UserData {
             );
       } else {
          CommonPlugin.getInstance()
-            .getMemberManager()
-            .getMembers()
+            .getAccountManager()
+            .getAccounts()
             .stream()
-            .filter(member -> member.isStaff() && member.getMemberConfiguration().isAnticheatEnabled())
+            .filter(member -> member.isStaff() && member.getAccountConfiguration().isAnticheatEnabled())
             .forEach(
                member -> member.sendMessage(
                      new MessageBuilder(string).setHoverEvent(hover).setClickEvent(Action.SUGGEST_COMMAND, "/teleport " + this.getPlayerName()).create()

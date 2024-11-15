@@ -16,7 +16,7 @@ import br.com.plutomc.game.engine.ArcadeCommon;
 import br.com.plutomc.game.bedwars.island.Island;
 import br.com.plutomc.game.bedwars.island.IslandColor;
 import br.com.plutomc.game.engine.gamer.Team;
-import br.com.plutomc.core.common.member.party.Party;
+import br.com.plutomc.core.common.account.party.Party;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 

@@ -282,7 +282,6 @@ public class BukkitCommandFramework implements CommandFramework {
          this.owningPlugin = owner;
          this.usageMessage = "";
          this.permission = permission;
-         if (CommonPlugin.getInstance().getServerType() == ServerType.RANKUP) {
             try {
                Class<?> timingsClass = Class.forName("co.aikar.timings.Timings");
                Method method = timingsClass.getDeclaredMethod("ofSafe", String.class);
@@ -299,9 +298,6 @@ public class BukkitCommandFramework implements CommandFramework {
             } catch (IllegalAccessException var12) {
                throw new RuntimeException(var12);
             }
-         } else {
-            this.timings = new CustomTimingsHandler("** Command: " + this.getName());
-         }
       }
 
       @Override

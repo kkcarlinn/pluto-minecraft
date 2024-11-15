@@ -1,18 +1,18 @@
 package br.com.plutomc.core.bungee.event.player;
 
-import br.com.plutomc.core.bungee.member.BungeeMember;
+import br.com.plutomc.core.bungee.account.BungeeAccount;
 import net.md_5.bungee.api.plugin.Event;
 
 public class PlayerFieldUpdateEvent extends Event {
-   private final BungeeMember player;
+   private final BungeeAccount player;
    private String fieldName;
 
-   public PlayerFieldUpdateEvent(BungeeMember player, String fieldName) {
+   public PlayerFieldUpdateEvent(BungeeAccount player, String fieldName) {
       this.player = player;
       this.fieldName = fieldName;
    }
 
-   public BungeeMember getPlayer() {
+   public BungeeAccount getPlayer() {
       return this.player;
    }
 

@@ -5,10 +5,10 @@ import br.com.plutomc.core.bukkit.event.member.PlayerChangedTagEvent;
 import br.com.plutomc.core.bukkit.event.member.PlayerLanguageChangeEvent;
 import br.com.plutomc.core.bukkit.utils.player.PlayerHelper;
 import br.com.plutomc.core.common.CommonPlugin;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.bukkit.utils.scoreboard.ScoreboardAPI;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.permission.Tag;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -44,7 +44,7 @@ public class TagListener implements Listener {
          Player player = event.getPlayer();
 
          for(Player o : Bukkit.getOnlinePlayers()) {
-            Member bp = CommonPlugin.getInstance().getMemberManager().getMember(o.getUniqueId());
+            Account bp = CommonPlugin.getInstance().getAccountManager().getAccount(o.getUniqueId());
             Tag tag = bp.getTag();
             String id = getTeamName(tag);
             String prefix = PlayerHelper.translate(Language.getLanguage(player.getUniqueId()), tag.getRealPrefix());
@@ -60,7 +60,7 @@ public class TagListener implements Listener {
    public void onPlayerChangeTag(PlayerChangedTagEvent event) {
       if (BukkitCommon.getInstance().isTagControl()) {
          Player p = event.getPlayer();
-         Member player = (BukkitMember)event.getMember();
+         Account player = (BukkitAccount)event.getMember();
          if (player != null) {
             String id = getTeamName(event.getNewTag());
             String oldId = getTeamName(event.getOldTag());
@@ -80,7 +80,7 @@ public class TagListener implements Listener {
    public void onPlayerJoin(PlayerJoinEvent e) {
       if (BukkitCommon.getInstance().isTagControl()) {
          Player p = e.getPlayer();
-         Member player = CommonPlugin.getInstance().getMemberManager().getMember(e.getPlayer().getUniqueId(), BukkitMember.class);
+         Account player = CommonPlugin.getInstance().getAccountManager().getAccount(e.getPlayer().getUniqueId(), BukkitAccount.class);
          Tag tag = player.getTag();
          String id = getTeamName(tag);
 
@@ -92,7 +92,7 @@ public class TagListener implements Listener {
 
          for(Player o : Bukkit.getOnlinePlayers()) {
             if (!o.getUniqueId().equals(p.getUniqueId())) {
-               BukkitMember bp = (BukkitMember)CommonPlugin.getInstance().getMemberManager().getMember(o.getUniqueId());
+               BukkitAccount bp = (BukkitAccount)CommonPlugin.getInstance().getAccountManager().getAccount(o.getUniqueId());
                if (bp == null) {
                   o.kickPlayer("§cSua conta não foi carregada.");
                   return;

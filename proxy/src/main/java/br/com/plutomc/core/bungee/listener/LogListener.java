@@ -5,7 +5,7 @@ import br.com.plutomc.core.bungee.event.player.PlayerPunishEvent;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.command.CommandSender;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.punish.Punish;
 import br.com.plutomc.core.common.utils.DateUtils;
 import net.md_5.bungee.api.plugin.Listener;
@@ -14,15 +14,15 @@ import net.md_5.bungee.event.EventHandler;
 public class LogListener implements Listener {
     @EventHandler
     public void onPlayerPunish(PlayerPunishEvent event) {
-        Member target = event.getPunished();
+        Account target = event.getPunished();
         CommandSender sender = event.getSender();
         Punish punish = event.getPunish();
         if (punish.getPunisherId().equals(CommonConst.CONSOLE_ID)) {
             CommonPlugin.getInstance()
-                    .getMemberManager()
-                    .getMembers()
+                    .getAccountManager()
+                    .getAccounts()
                     .stream()
-                    .filter(Member::isStaff)
+                    .filter(Account::isStaff)
                     .forEach(
                             member -> member.sendMessage(
                                     "§cO jogador "
@@ -38,7 +38,7 @@ public class LogListener implements Listener {
             switch(punish.getPunishType()) {
                 case KICK:
                     CommonPlugin.getInstance()
-                            .getMemberManager()
+                            .getAccountManager()
                             .staffLog(
                                     "§cO jogador " + target.getPlayerName() + " foi expulso do servidor por " + punish.getPunishReason() + " pelo " + sender.getName() + ".",
                                     false
@@ -46,8 +46,8 @@ public class LogListener implements Listener {
                     break;
                 default:
                     CommonPlugin.getInstance()
-                            .getMemberManager()
-                            .getMembers()
+                            .getAccountManager()
+                            .getAccounts()
                             .stream()
                             .forEach(
                                     member -> {
@@ -89,11 +89,11 @@ public class LogListener implements Listener {
 
     @EventHandler
     public void onPlayerPardoned(PlayerPardonedEvent event) {
-        Member target = event.getPunished();
+        Account target = event.getPunished();
         CommandSender sender = event.getSender();
         Punish punish = event.getPunish();
         CommonPlugin.getInstance()
-                .getMemberManager()
+                .getAccountManager()
                 .staffLog(
                         "§eO jogador " + target.getPlayerName() + " foi des" + punish.getPunishType().getDescriminator().toLowerCase() + " pelo " + sender.getName() + ".",
                         false

@@ -2,14 +2,14 @@ package br.com.plutomc.core.bukkit.command.register;
 
 import br.com.plutomc.core.bukkit.BukkitCommon;
 import br.com.plutomc.core.bukkit.manager.ChatManager;
-import br.com.plutomc.core.bukkit.member.BukkitMember;
+import br.com.plutomc.core.bukkit.account.BukkitAccount;
 import br.com.plutomc.core.bukkit.menu.group.MemberGroupListInventory;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.command.CommandArgs;
 import br.com.plutomc.core.common.command.CommandClass;
 import br.com.plutomc.core.common.command.CommandFramework;
 import br.com.plutomc.core.common.command.CommandSender;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import br.com.plutomc.core.common.permission.Group;
 import br.com.plutomc.core.common.permission.GroupInfo;
 import br.com.plutomc.core.common.permission.Tag;
@@ -94,11 +94,11 @@ public class GroupCommand implements CommandClass {
                (new BukkitRunnable() {
                   @Override
                   public void run() {
-                     final List<Member> memberList = CommonPlugin.getInstance().getMemberData().getMembersByGroup(finalG);
+                     final List<Account> accountList = CommonPlugin.getInstance().getAccountData().getAccountsByGroup(finalG);
                      (new BukkitRunnable() {
                         @Override
                         public void run() {
-                           new MemberGroupListInventory(cmdArgs.getSenderAsMember(BukkitMember.class).getPlayer(), finalG, memberList);
+                           new MemberGroupListInventory(cmdArgs.getSenderAsMember(BukkitAccount.class).getPlayer(), finalG, accountList);
                         }
                      }).runTask(BukkitCommon.getInstance());
                   }
@@ -352,19 +352,19 @@ public class GroupCommand implements CommandClass {
                this.staffLog("O grupo " + StringFormat.formatString(group.getGroupName()) + " foi deletado.", true);
                break;
             default:
-               Member member = CommonPlugin.getInstance().getMemberManager().getMemberByName(args[0]);
-               if (member == null) {
-                  member = CommonPlugin.getInstance().getMemberData().loadMember(args[0], true);
-                  if (member == null) {
+               Account account = CommonPlugin.getInstance().getAccountManager().getAccountByName(args[0]);
+               if (account == null) {
+                  account = CommonPlugin.getInstance().getAccountData().loadAccount(args[0], true);
+                  if (account == null) {
                      sender.sendMessage(sender.getLanguage().t("account-doesnt-exist", "%player%", args[0]));
                      return;
                   }
                }
 
-               Group actualGroup = member.getServerGroup();
+               Group actualGroup = account.getServerGroup();
                if (args.length <= 1) {
-                  GroupInfo groupInfo = member.getServerGroup(actualGroup.getGroupName());
-                  sender.sendMessage("  §aMembro " + member.getPlayerName());
+                  GroupInfo groupInfo = account.getServerGroup(actualGroup.getGroupName());
+                  sender.sendMessage("  §aMembro " + account.getPlayerName());
                   sender.sendMessage(
                      new MessageBuilder("    §fGrupo: §7" + StringFormat.formatString(actualGroup.getGroupName()))
                         .setHoverEvent("§aClique para ver informações do grupo.")
@@ -384,9 +384,9 @@ public class GroupCommand implements CommandClass {
                }
 
                if (args.length == 2) {
-                  sender.sendMessage("§eUse §b/group " + member.getPlayerName() + " add <group>§e para adicionar um grupo a alguém.");
-                  sender.sendMessage("§eUse §b/group " + member.getPlayerName() + " remove <group>§e para remover um grupo de alguém.");
-                  sender.sendMessage("§eUse §b/group " + member.getPlayerName() + " set <group>§e para setar um grupo a alguém.");
+                  sender.sendMessage("§eUse §b/group " + account.getPlayerName() + " add <group>§e para adicionar um grupo a alguém.");
+                  sender.sendMessage("§eUse §b/group " + account.getPlayerName() + " remove <group>§e para remover um grupo de alguém.");
+                  sender.sendMessage("§eUse §b/group " + account.getPlayerName() + " set <group>§e para setar um grupo a alguém.");
                   return;
                }
 
@@ -395,21 +395,21 @@ public class GroupCommand implements CommandClass {
                   case "add":
                      boolean temp = args.length >= 4;
                      long expireTime = temp ? DateUtils.getTime(args[3]) : -1L;
-                     member.addServerGroup(group.getGroupName(), new GroupInfo(sender, expireTime));
-                     member.setTag(member.getDefaultTag());
-                     member.getMemberConfiguration().setStaffChat(false);
+                     account.addServerGroup(group.getGroupName(), new GroupInfo(sender, expireTime));
+                     account.setTag(account.getDefaultTag());
+                     account.getAccountConfiguration().setStaffChat(false);
                      sender.sendMessage(
                         "§aVocê adicionou o cargo "
                            + group.getGroupName()
                            + " ao jogador "
-                           + member.getPlayerName()
+                           + account.getPlayerName()
                            + " por tempo "
                            + (temp ? DateUtils.getTime(sender.getLanguage(), expireTime) : "indeterminado")
                            + "."
                      );
                      this.staffLog(
                         "O jogador "
-                           + member.getPlayerName()
+                           + account.getPlayerName()
                            + " recebeu cargo "
                            + group.getRealPrefix()
                            + " §7por "
@@ -420,25 +420,25 @@ public class GroupCommand implements CommandClass {
                      );
                      break;
                   case "remove":
-                     if (member.hasGroup(group.getGroupName())) {
-                        member.removeServerGroup(group.getGroupName());
-                        member.setTag(member.getDefaultTag());
-                        member.getMemberConfiguration().setStaffChat(false);
-                        sender.sendMessage("§aVocê removeu o cargo " + group.getGroupName() + " do jogador " + member.getPlayerName() + ".");
+                     if (account.hasGroup(group.getGroupName())) {
+                        account.removeServerGroup(group.getGroupName());
+                        account.setTag(account.getDefaultTag());
+                        account.getAccountConfiguration().setStaffChat(false);
+                        sender.sendMessage("§aVocê removeu o cargo " + group.getGroupName() + " do jogador " + account.getPlayerName() + ".");
                         this.staffLog(
-                           "O jogador " + member.getPlayerName() + " teve o seu cargo " + group.getRealPrefix() + " §7removido pelo " + sender.getName(), true
+                           "O jogador " + account.getPlayerName() + " teve o seu cargo " + group.getRealPrefix() + " §7removido pelo " + sender.getName(), true
                         );
                      } else {
-                        sender.sendMessage("§cO player " + member.getPlayerName() + " não tem o grupo " + group.getGroupName() + ".");
+                        sender.sendMessage("§cO player " + account.getPlayerName() + " não tem o grupo " + group.getGroupName() + ".");
                      }
                      break;
                   case "set":
-                     member.setServerGroup(group.getGroupName(), new GroupInfo(sender, -1L));
-                     member.setTag(member.getDefaultTag());
-                     member.getMemberConfiguration().setStaffChat(false);
-                     sender.sendMessage("§aVocê adicionou o cargo " + group.getGroupName() + " ao jogador " + member.getPlayerName() + ".");
+                     account.setServerGroup(group.getGroupName(), new GroupInfo(sender, -1L));
+                     account.setTag(account.getDefaultTag());
+                     account.getAccountConfiguration().setStaffChat(false);
+                     sender.sendMessage("§aVocê adicionou o cargo " + group.getGroupName() + " ao jogador " + account.getPlayerName() + ".");
                      this.staffLog(
-                        "O jogador " + member.getPlayerName() + " teve o cargo alterado para " + group.getRealPrefix() + " §7pelo " + sender.getName(), true
+                        "O jogador " + account.getPlayerName() + " teve o cargo alterado para " + group.getRealPrefix() + " §7pelo " + sender.getName(), true
                      );
                      break;
                   default:

@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import br.com.plutomc.core.common.CommonConst;
 import br.com.plutomc.core.common.CommonPlugin;
 import br.com.plutomc.core.common.language.Language;
-import br.com.plutomc.core.common.member.Member;
+import br.com.plutomc.core.common.account.Account;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -52,7 +52,7 @@ public class TranslationInjector implements PacketInjector {
                      if (event.getPlayer().getUniqueId() != null) {
                         if (event.getPacket() != null) {
                            if (!event.isReadOnly()) {
-                              Language lang = Member.getLanguage(event.getPlayer().getUniqueId());
+                              Language lang = Account.getLanguage(event.getPlayer().getUniqueId());
                               if (event.getPacketType() == Server.CHAT) {
                                  PacketContainer packet = event.getPacket().deepClone();
       
