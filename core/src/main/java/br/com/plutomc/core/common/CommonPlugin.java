@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
@@ -111,7 +112,7 @@ public class CommonPlugin {
    public void loadConfig() {
       try {
          FileInputStream fileInputStream = new FileInputStream(this.fileCreator.createFile("server.json", CommonConst.PRINCIPAL_DIRECTORY));
-         InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+         InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
          JsonReader jsonReader = new JsonReader(inputStreamReader);
          this.pluginInfo = CommonConst.GSON_PRETTY.fromJson(jsonReader, PluginInfo.class);
          jsonReader.close();
@@ -128,7 +129,7 @@ public class CommonPlugin {
          this.pluginInfo.sort();
          String json = CommonConst.GSON_PRETTY.toJson(this.pluginInfo);
          FileOutputStream fileOutputStream = new FileOutputStream(this.fileCreator.createFile("server.json", CommonConst.PRINCIPAL_DIRECTORY));
-         OutputStreamWriter outputStreamReader = new OutputStreamWriter(fileOutputStream, "UTF-8");
+         OutputStreamWriter outputStreamReader = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
          BufferedWriter bufferedWriter = new BufferedWriter(outputStreamReader);
          bufferedWriter.write(json);
          bufferedWriter.flush();
@@ -148,7 +149,7 @@ public class CommonPlugin {
          this.pluginInfo.sort();
          String json = CommonConst.GSON_PRETTY.toJson(this.pluginInfo);
          FileOutputStream fileOutputStream = new FileOutputStream(this.fileCreator.createFile("server.json", CommonConst.PRINCIPAL_DIRECTORY));
-         OutputStreamWriter outputStreamReader = new OutputStreamWriter(fileOutputStream, "UTF-8");
+         OutputStreamWriter outputStreamReader = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
          BufferedWriter bufferedWriter = new BufferedWriter(outputStreamReader);
          bufferedWriter.write(json);
          bufferedWriter.flush();
@@ -169,7 +170,7 @@ public class CommonPlugin {
 
    public void debug(String message) {
       if (this.pluginInfo.isDebug()) {
-         System.out.println("[DEBUG] " + message);
+         System.out.println("[DEBUG] (" + serverId + ") " + message);
       }
    }
 
