@@ -43,8 +43,14 @@ import br.com.plutomc.core.common.manager.StatusManager;
 import br.com.plutomc.core.common.packet.types.configuration.ConfigurationFieldUpdate;
 import br.com.plutomc.core.common.packet.types.configuration.ConfigurationUpdate;
 import br.com.plutomc.core.common.utils.FileCreator;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CommonPlugin {
+
+   @Getter
    private static CommonPlugin instance;
    private PluginPlatform pluginPlatform;
    private PluginInfo pluginInfo;
@@ -296,183 +302,5 @@ public class CommonPlugin {
       });
    }
 
-   public PluginPlatform getPluginPlatform() {
-      return this.pluginPlatform;
-   }
 
-   public PluginInfo getPluginInfo() {
-      return this.pluginInfo;
-   }
-
-   public FileCreator getFileCreator() {
-      return this.fileCreator;
-   }
-
-   public ConfigurationManager getConfigurationManager() {
-      return this.configurationManager;
-   }
-
-   public AccountManager getAccountManager() {
-      return this.accountManager;
-   }
-
-   public PartyManager getPartyManager() {
-      return this.partyManager;
-   }
-
-   public StatusManager getStatusManager() {
-      return this.statusManager;
-   }
-
-   public ReportManager getReportManager() {
-      return this.reportManager;
-   }
-
-   public DiscordData getDiscordData() {
-      return this.discordData;
-   }
-
-   public AccountData getAccountData() {
-      return this.accountData;
-   }
-
-   public PartyData getPartyData() {
-      return this.partyData;
-   }
-
-   public ServerData getServerData() {
-      return this.serverData;
-   }
-
-   public SkinData getSkinData() {
-      return this.skinData;
-   }
-
-   public UUIDFetcher getUuidFetcher() {
-      return this.uuidFetcher;
-   }
-
-   public NameFetcher getNameFetcher() {
-      return this.nameFetcher;
-   }
-
-   public String getServerId() {
-      return this.serverId;
-   }
-
-   public String getServerAddress() {
-      return this.serverAddress;
-   }
-
-   public ServerType getServerType() {
-      return this.serverType;
-   }
-
-   public boolean isJoinEnabled() {
-      return this.joinEnabled;
-   }
-
-   public String getMap() {
-      return this.map;
-   }
-
-   public MinigameState getMinigameState() {
-      return this.minigameState;
-   }
-
-   public int getServerTime() {
-      return this.serverTime;
-   }
-
-   public Class<? extends Party> getPartyClass() {
-      return this.partyClass;
-   }
-
-   public MongoConnection getMongoConnection() {
-      return this.mongoConnection;
-   }
-
-   public RedisConnection getRedisConnection() {
-      return this.redisConnection;
-   }
-
-   public static CommonPlugin getInstance() {
-      return instance;
-   }
-
-   public void setPluginInfo(PluginInfo pluginInfo) {
-      this.pluginInfo = pluginInfo;
-   }
-
-   public void setConfigurationManager(ConfigurationManager configurationManager) {
-      this.configurationManager = configurationManager;
-   }
-
-   public void setAccountManager(AccountManager accountManager) {
-      this.accountManager = accountManager;
-   }
-
-   public void setPartyManager(PartyManager partyManager) {
-      this.partyManager = partyManager;
-   }
-
-   public void setStatusManager(StatusManager statusManager) {
-      this.statusManager = statusManager;
-   }
-
-   public void setReportManager(ReportManager reportManager) {
-      this.reportManager = reportManager;
-   }
-
-   public void setDiscordData(DiscordData discordData) {
-      this.discordData = discordData;
-   }
-
-   public void setAccountData(AccountData accountData) {
-      this.accountData = accountData;
-   }
-
-   public void setPartyData(PartyData partyData) {
-      this.partyData = partyData;
-   }
-
-   public void setServerData(ServerData serverData) {
-      this.serverData = serverData;
-   }
-
-   public void setSkinData(SkinData skinData) {
-      this.skinData = skinData;
-   }
-
-   public void setServerId(String serverId) {
-      this.serverId = serverId;
-   }
-
-   public void setServerAddress(String serverAddress) {
-      this.serverAddress = serverAddress;
-   }
-
-   public void setServerType(ServerType serverType) {
-      this.serverType = serverType;
-   }
-
-   public void setJoinEnabled(boolean joinEnabled) {
-      this.joinEnabled = joinEnabled;
-   }
-
-   public void setMap(String map) {
-      this.map = map;
-   }
-
-   public void setMinigameState(MinigameState minigameState) {
-      this.minigameState = minigameState;
-   }
-
-   public void setServerTime(int serverTime) {
-      this.serverTime = serverTime;
-   }
-
-   public void setPartyClass(Class<? extends Party> partyClass) {
-      this.partyClass = partyClass;
-   }
 }
